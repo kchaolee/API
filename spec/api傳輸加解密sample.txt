@@ -1,0 +1,153 @@
+
+//region 驗證請求數據
+ 
+//開始解密 RequestData
+decryptedRequestData = AES256Helper.AESDecrypt(ApplicationConstant.APIAESKey, request.RequestData);
+
+
+//以解密後字串反序列化取得請求物件 
+requestObj = JsonConvert.DeserializeObject<RequestContract>(decryptedRequestData);
+
+
+
+// Api回應物件
+public class ResponseContract
+{
+	/// 追蹤編號，將Request時的值帶回
+	public string TraceId { get; set; }
+	
+	/// 狀態 S:處理完成 L:請重新登入 F:處理失敗
+	public string Status { get; set; }
+	
+	public string Message { get; set; }
+
+	/// 回傳資料
+	public Object ReturnData { get; set; }
+}
+
+
+
+// Api的AES加解密Helper
+public class AES256Helper
+{
+	/// <summary>
+	/// AES加密
+	/// </summary>
+	/// <param name="aesKey"></param>
+	/// <param name="value"></param>
+	/// <returns></returns>
+	public static string AESEncrypt(string aesKey, string value)
+	{
+		byte[] key = Encoding.UTF8.GetBytes(aesKey);
+		value = Convert.ToBase64String(Encoding.Unicode.GetBytes(value));
+		return AESEncrypt(value, key);
+	}
+
+	/// <summary>
+	/// AES解密
+	/// </summary>
+	/// <param name="aesKey"></param>
+	/// <param name="value"></param>
+	/// <returns></returns>
+	public static string AESDecrypt(string aesKey, string value)
+	{
+		byte[] key = Encoding.UTF8.GetBytes(aesKey);
+		byte[] response = Convert.FromBase64String(AESDecrypt(value, key));
+		return Encoding.Unicode.GetString(response, 0, response.Length);
+	}
+
+	/// <summary>
+	/// AES encrypt
+	/// </summary>
+	/// <param name="value">要加密的值</param>
+	/// <returns></returns>
+	private static string AESEncrypt(string value, byte[] key)
+	{
+		//加密後的Byte
+		byte[] encryptedBytes = null;
+		//將要加密的值轉成Byte
+		byte[] sourceBytes = UTF8Encoding.ASCII.GetBytes(value);
+		byte[] akey = copyOfRange(key, 32);
+		byte[] aiv = copyOfRange(key, 16);
+
+		using (MemoryStream ms = new MemoryStream())
+		{
+			using (RijndaelManaged aes = new RijndaelManaged())
+			{
+				aes.KeySize = 256;
+				aes.BlockSize = 128;
+				aes.Key = akey;
+				aes.IV = aiv;
+
+				aes.Mode = CipherMode.CBC;
+				aes.Padding = PaddingMode.PKCS7;
+
+				using (var cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write))
+				{
+					cs.Write(sourceBytes, 0, sourceBytes.Length);
+				}
+
+				encryptedBytes = ms.ToArray();
+			}
+		}
+
+		return Convert.ToBase64String(encryptedBytes, 0, encryptedBytes.Length);
+	}
+
+	/// <summary>
+	/// AES decrypt
+	/// </summary>
+	/// <param name="value">加密過的值</param>
+	/// <returns>解密後的值</returns>
+	private static string AESDecrypt(string value, byte[] key)
+	{
+		byte[] decryptedBytes = null;
+		byte[] toEncryptArray = Convert.FromBase64String(value);
+		byte[] akey = copyOfRange(key, 32);
+		byte[] aiv = copyOfRange(key, 16);
+
+		using (MemoryStream ms = new MemoryStream())
+		{
+			using (RijndaelManaged aes = new RijndaelManaged())
+			{
+				aes.KeySize = 256;
+				aes.BlockSize = 128;
+				aes.Key = akey;
+				aes.IV = aiv;
+
+				aes.Mode = CipherMode.CBC;
+				aes.Padding = PaddingMode.PKCS7;
+
+				using (var cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Write))
+				{
+					cs.Write(toEncryptArray, 0, toEncryptArray.Length);
+				}
+
+				decryptedBytes = ms.ToArray();
+			}
+		}
+
+		return UTF8Encoding.UTF8.GetString(decryptedBytes);
+	}
+
+	private static byte[] copyOfRange(byte[] src, int len)
+	{
+		byte[] dest = new byte[len];
+		int srclen = src.Length;
+		int getlen = len >= srclen ? srclen : len;
+		Array.Copy(src, 0, dest, 0, getlen);
+
+		if (len - srclen > 0)
+		{
+			for (int x = srclen - 1; x < len; x++)
+			{
+				dest[x] = 0;
+			}
+		}
+
+		return dest;
+	}
+}
+
+	
+	

@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "docx": "^9.6.0",
+    "markdown-it": "^12.3.2"
+  },
+  "scripts": {
+    "build-html": "node scripts/markdown2html.js"
+  }
+}
