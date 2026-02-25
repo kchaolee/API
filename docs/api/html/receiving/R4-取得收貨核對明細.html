@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>R4-取得收貨核對明細</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style> :root{ --bg: #f6f7fb; --card:#fff; } </style>
+  </head>
+<body>
+  <div class="site-wrap">
+    <header class="site-header">
+      <h1 class="site-title">API 技術規格 - 靜態檔</h1>
+    </header>
+    <main class="content">
+<h1>R4 - 取得收貨核對明細</h1>
+<h2>接口資訊</h2>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>內容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>接口名稱</strong></td>
+<td>取得收貨核對明細</td>
+</tr>
+<tr>
+<td><strong>接口代號</strong></td>
+<td>R4</td>
+</tr>
+<tr>
+<td><strong>URL</strong></td>
+<td>POST <code>/wmService/v1/PO/PoVerifying</code></td>
+</tr>
+<tr>
+<td><strong>通訊方式</strong></td>
+<td>POST</td>
+</tr>
+<tr>
+<td><strong>請求格式</strong></td>
+<td>JSON</td>
+</tr>
+<tr>
+<td><strong>回應格式</strong></td>
+<td>JSON</td>
+</tr>
+<tr>
+<td><strong>提供方</strong></td>
+<td>WMS</td>
+</tr>
+<tr>
+<td><strong>調用方</strong></td>
+<td>外部系統 (Android App)</td>
+</tr>
+</tbody>
+</table>
+<h2>功能說明</h2>
+<p>完成所有收貨項目後，取得核對資料與儲位選單。顯示每個 PO 項次的收貨完成度、已收件數摘要以及可選擇的儲位清單。</p>
+<h2>請求參數</h2>
+<table>
+<thead>
+<tr>
+<th>項次</th>
+<th>參數名稱</th>
+<th>參數說明</th>
+<th>傳輸型態</th>
+<th>DB資料類型</th>
+<th>字串最大長度</th>
+<th>備註</th>
+<th>必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>requestId</td>
+<td>請求編號</td>
+<td>String(36)</td>
+<td>GUID</td>
+<td>36</td>
+<td>每個請求唯一，重複提交使用同一編號</td>
+<td>V</td>
+</tr>
+<tr>
+<td>2</td>
+<td>wmsAsnNumber</td>
+<td>WMS預期收貨單號</td>
+<td>String(10)</td>
+<td>Char</td>
+<td>10</td>
+<td>帶 R1 回傳的 “WMS預期收貨單號”</td>
+<td>V</td>
+</tr>
+<tr>
+<td>3</td>
+<td>storerCode</td>
+<td>貨主代碼</td>
+<td>String(15)</td>
+<td>Char</td>
+<td>15</td>
+<td>帶 R1 回傳的 “貨主代碼”</td>
+<td>V</td>
+</tr>
+<tr>
+<td>4</td>
+<td>externReceiptNumber</td>
+<td>外部收貨編號</td>
+<td>String(30)</td>
+<td>Char</td>
+<td>30</td>
+<td>外部收貨編號＝採購單號</td>
+<td>V</td>
+</tr>
+</tbody>
+</table>
+<h3>請求範例</h3>
+<pre><code class="language-json">{
+  &quot;requestId&quot;: &quot;fb1a6bb8-21cd-490e-9f47-962cf99ec089&quot;,
+  &quot;wmsAsnNumber&quot;: &quot;0000000001&quot;,
+  &quot;storerCode&quot;: &quot;69512619&quot;,
+  &quot;externReceiptNumber&quot;: &quot;API21052600601&quot;
+}
+</code></pre>
+<h3>JSON Schema</h3>
+<pre><code class="language-typescript">interface R4Request {
+  requestId: string;        // 格式: UUID v4
+  wmsAsnNumber: string;    // 來自 R1 回傳
+  storerCode: string;      // 來自 R1 回傳
+  externReceiptNumber: string; // 來自 R1 回傳
+}
+</code></pre>
+<h2>回應參數</h2>
+<table>
+<thead>
+<tr>
+<th>項次</th>
+<th>參數名稱</th>
+<th>參數說明</th>
+<th>傳輸型態</th>
+<th>DB資料類型</th>
+<th>字串最大長度</th>
+<th>備註</th>
+<th>必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>requestId</td>
+<td>請求編號</td>
+<td>String(36)</td>
+<td>Char</td>
+<td>36</td>
+<td>傳回原始請求編號</td>
+<td>V</td>
+</tr>
+<tr>
+<td>2</td>
+<td>status</td>
+<td>API回應結果代碼</td>
+<td>String(1)</td>
+<td>Char</td>
+<td>-</td>
+<td>成功代碼：S、失敗代碼：F</td>
+<td>V</td>
+</tr>
+<tr>
+<td>3</td>
+<td>message</td>
+<td>API回應結果訊息</td>
+<td>String(255)</td>
+<td>Char</td>
+<td>255</td>
+<td>-</td>
+<td>V</td>
+</tr>
+<tr>
+<td>4</td>
+<td>data</td>
+<td>回覆資料內容</td>
+<td>Object</td>
+<td>-</td>
+<td>-</td>
+<td>成功時有值</td>
+<td>-</td>
+</tr>
+<tr>
+<td>5</td>
+<td>warehouseCode</td>
+<td>倉庫</td>
+<td>String(10)</td>
+<td>Char</td>
+<td>10</td>
+<td>實體倉庫代碼＝回廠工廠</td>
+<td>V</td>
+</tr>
+<tr>
+<td>6</td>
+<td>wmsAsnNumber</td>
+<td>WMS預期收貨單號</td>
+<td>String(10)</td>
+<td>Char</td>
+<td>10</td>
+<td>WMS單號主鍵值</td>
+<td>V</td>
+</tr>
+<tr>
+<td>7</td>
+<td>storerCode</td>
+<td>貨主代碼</td>
+<td>String(15)</td>
+<td>Char</td>
+<td>15</td>
+<td>貨主主檔代碼</td>
+<td>V</td>
+</tr>
+<tr>
+<td>8</td>
+<td>externReceiptNumber</td>
+<td>外部收貨編號</td>
+<td>String(30)</td>
+<td>Char</td>
+<td>30</td>
+<td>外部收貨編號＝採購單號</td>
+<td>V</td>
+</tr>
+<tr>
+<td>9</td>
+<td>poTotalQty</td>
+<td>PO總需求公斤數</td>
+<td>String(20)</td>
+<td>decimal(19,5)</td>
+<td>-</td>
+<td>PO需求總數量，小數</td>
+<td>V</td>
+</tr>
+<tr>
+<td>10</td>
+<td>recTotalPackQty</td>
+<td>已收總件數</td>
+<td>String(10)</td>
+<td>int</td>
+<td>-</td>
+<td>已收總件數，整數</td>
+<td>V</td>
+</tr>
+<tr>
+<td>11</td>
+<td>verifyList</td>
+<td>核對明細陣列</td>
+<td>Array</td>
+<td>-</td>
+<td>-</td>
+<td>核對明細項目清單</td>
+<td>-</td>
+</tr>
+<tr>
+<td>12</td>
+<td>lineNo</td>
+<td>WMS項次</td>
+<td>String(5)</td>
+<td>Char</td>
+<td>5</td>
+<td>-</td>
+<td>V</td>
+</tr>
+<tr>
+<td>13</td>
+<td>externLineNo</td>
+<td>外部項次</td>
+<td>String(20)</td>
+<td>Char</td>
+<td>20</td>
+<td>外部項次＝PO項次</td>
+<td>V</td>
+</tr>
+<tr>
+<td>14</td>
+<td>sku</td>
+<td>貨號</td>
+<td>String(50)</td>
+<td>Char</td>
+<td>50</td>
+<td>-</td>
+<td>V</td>
+</tr>
+<tr>
+<td>15</td>
+<td>itemName</td>
+<td>品名</td>
+<td>String(200)</td>
+<td>NVarChar</td>
+<td>200</td>
+<td>-</td>
+<td>V</td>
+</tr>
+<tr>
+<td>16</td>
+<td>expiryDate</td>
+<td>到期日</td>
+<td>String(10)</td>
+<td>DateTime</td>
+<td>-</td>
+<td>格式：“yyyy/MM/dd”</td>
+<td>V</td>
+</tr>
+<tr>
+<td>17</td>
+<td>recPackQty</td>
+<td>項次已收件數</td>
+<td>String(10)</td>
+<td>int</td>
+<td>-</td>
+<td>項次已收件數，整數</td>
+<td>V</td>
+</tr>
+<tr>
+<td>18</td>
+<td>locList</td>
+<td>儲位選單陣列</td>
+<td>Array</td>
+<td>-</td>
+<td>-</td>
+<td>可選擇的儲位清單</td>
+<td>-</td>
+</tr>
+<tr>
+<td>19</td>
+<td>locCode</td>
+<td>儲位編號</td>
+<td>String(10)</td>
+<td>Char</td>
+<td>10</td>
+<td>儲位編號</td>
+<td>V</td>
+</tr>
+</tbody>
+</table>
+<h3>JSON Schema (回應)</h3>
+<pre><code class="language-typescript">interface R4Response {
+  requestId: string;
+  status: &quot;S&quot; | &quot;F&quot;;
+  message: string;
+  data: {
+    warehouseCode: string;
+    wmsAsnNumber: string;
+    storerCode: string;
+    externReceiptNumber: string;
+    poTotalQty: string;      // PO總需求公斤數
+    recTotalPackQty: string; // 已收總件數
+    verifyList: Array&lt;{
+      lineNo: string;         // WMS項次
+      externLineNo: string;   // PO項次
+      sku: string;            // 貨號
+      itemName: string;       // 品名
+      expiryDate: string;     // 到期日
+      recPackQty: string;     // 項次已收件數
+    }&gt;;
+    locList: Array&lt;{
+      locCode: string;        // 儲位編號
+    }&gt;;
+  } | null;
+  errors: Array&lt;{code: string; message: string}&gt; | null;
+}
+</code></pre>
+<h3>回應範例 (成功)</h3>
+<pre><code class="language-json">{
+  &quot;requestId&quot;: &quot;fb1a6bb8-21cd-490e-9f47-962cf99ec089&quot;,
+  &quot;status&quot;: &quot;S&quot;,
+  &quot;message&quot;: &quot;成功&quot;,
+  &quot;data&quot;: {
+    &quot;warehouseCode&quot;: &quot;1020&quot;,
+    &quot;wmsAsnNumber&quot;: &quot;0000000001&quot;,
+    &quot;storerCode&quot;: &quot;69512619&quot;,
+    &quot;externReceiptNumber&quot;: &quot;API21052600601&quot;,
+    &quot;poTotalQty&quot;: &quot;500.000&quot;,
+    &quot;recTotalPackQty&quot;: &quot;300&quot;,
+    &quot;verifyList&quot;: [
+      {
+        &quot;lineNo&quot;: &quot;00001&quot;,
+        &quot;externLineNo&quot;: &quot;000010&quot;,
+        &quot;sku&quot;: &quot;SKU001&quot;,
+        &quot;itemName&quot;: &quot;鮭魚切片&quot;,
+        &quot;expiryDate&quot;: &quot;2025/12/31&quot;,
+        &quot;recPackQty&quot;: &quot;100&quot;
+      },
+      {
+        &quot;lineNo&quot;: &quot;00002&quot;,
+        &quot;externLineNo&quot;: &quot;000020&quot;,
+        &quot;sku&quot;: &quot;SKU002&quot;,
+        &quot;itemName&quot;: &quot;鱸魚&quot;,
+        &quot;expiryDate&quot;: &quot;2025/12/25&quot;,
+        &quot;recPackQty&quot;: &quot;200&quot;
+      }
+    ],
+    &quot;locList&quot;: [
+      {
+        &quot;locCode&quot;: &quot;A01&quot;
+      },
+      {
+        &quot;locCode&quot;: &quot;A02&quot;
+      },
+      {
+        &quot;locCode&quot;: &quot;B01&quot;
+      }
+    ]
+  },
+  &quot;errors&quot;: null
+}
+</code></pre>
+<h3>回應範例 (失敗)</h3>
+<pre><code class="language-json">{
+  &quot;requestId&quot;: &quot;fb1a6bb8-21cd-490e-9f47-962cf99ec089&quot;,
+  &quot;status&quot;: &quot;F&quot;,
+  &quot;message&quot;: &quot;失敗-檢查的資料不存在&quot;,
+  &quot;data&quot;: null,
+  &quot;errors&quot;: [
+    {
+      &quot;code&quot;: &quot;F982&quot;,
+      &quot;message&quot;: &quot;採購單號不存在&quot;
+    }
+  ]
+}
+</code></pre>
+<h2>使用方式</h2>
+<h3>Curl 範例</h3>
+<pre><code class="language-bash">curl -X POST http://192.168.x.x/wmService/v1/PO/PoVerifying \
+  -H &quot;Authorization: Bearer {accessToken}&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d '{
+    &quot;requestId&quot;: &quot;fb1a6bb8-21cd-490e-9f47-962cf99ec089&quot;,
+    &quot;wmsAsnNumber&quot;: &quot;0000000001&quot;,
+    &quot;storerCode&quot;: &quot;69512619&quot;,
+    &quot;externReceiptNumber&quot;: &quot;API21052600601&quot;
+  }'
+</code></pre>
+<h3>Android Kotlin 範例</h3>
+<pre><code class="language-kotlin">data class VerifyData(
+    val warehouseCode: String,
+    val wmsAsnNumber: String,
+    val storerCode: String,
+    val externReceiptNumber: String,
+    val poTotalQty: String,      // PO總需求公斤數
+    val recTotalPackQty: Int,    // 已收總件數
+    val verifyList: List&lt;VerifyDetail&gt;,
+    val locList: List&lt;Location&gt;
+)
+
+data class VerifyDetail(
+    val lineNo: String,         // WMS項次
+    val externLineNo: String,   // PO項次
+    val sku: String,            // 貨號
+    val itemName: String,       // 品名
+    val expiryDate: String,     // 到期日
+    val recPackQty: Int         // 項次已收件數
+)
+
+data class Location(
+    val locCode: String         // 儲位編號
+)
+
+class ReceivingRepository {
+    private val baseUrl = &quot;http://192.168.x.x/wmService/v1&quot;
+    private val client = OkHttpClient()
+
+    suspend fun getReceivingVerifyData(
+        wmsAsnNumber: String,
+        storerCode: String,
+        externReceiptNumber: String
+    ): Result&lt;VerifyData&gt; = withContext(Dispatchers.IO) {
+        val requestId = UUID.randomUUID().toString()
+        val token = getAccessToken()
+
+        try {
+            val jsonRequest = JSONObject().apply {
+                put(&quot;requestId&quot;, requestId)
+                put(&quot;wmsAsnNumber&quot;, wmsAsnNumber)
+                put(&quot;storerCode&quot;, storerCode)
+                put(&quot;externReceiptNumber&quot;, externReceiptNumber)
+            }
+
+            val body = jsonRequest.toString().toRequestBody(&quot;application/json&quot;.toMediaType())
+            val request = Request.Builder()
+                .url(&quot;$baseUrl/PO/PoVerifying&quot;)
+                .addHeader(&quot;Authorization&quot;, &quot;Bearer $token&quot;)
+                .post(body)
+                .build()
+
+            val response = client.newCall(request).execute()
+            val responseBody = response.body?.string() ?: throw Exception(&quot;無回應&quot;)
+
+            val jsonResponse = JSONObject(responseBody)
+
+            if (jsonResponse.getString(&quot;status&quot;) == &quot;S&quot;) {
+                val data = jsonResponse.getJSONObject(&quot;data&quot;)
+
+                // 解析核對明細
+                val verifyList = data.getJSONArray(&quot;verifyList&quot;)
+                val details = mutableListOf&lt;VerifyDetail&gt;()
+                for (i in 0 until verifyList.length()) {
+                    val detail = verifyList.getJSONObject(i)
+                    details.add(
+                        VerifyDetail(
+                            lineNo = detail.getString(&quot;lineNo&quot;),
+                            externLineNo = detail.getString(&quot;externLineNo&quot;),
+                            sku = detail.getString(&quot;sku&quot;),
+                            itemName = detail.getString(&quot;itemName&quot;),
+                            expiryDate = detail.getString(&quot;expiryDate&quot;),
+                            recPackQty = detail.getString(&quot;recPackQty&quot;).toInt()
+                        )
+                    )
+                }
+
+                // 解析儲位選單
+                val locList = data.getJSONArray(&quot;locList&quot;)
+                val locations = mutableListOf&lt;Location&gt;()
+                for (i in 0 until locList.length()) {
+                    val loc = locList.getJSONObject(i)
+                    locations.add(
+                        Location(
+                            locCode = loc.getString(&quot;locCode&quot;)
+                        )
+                    )
+                }
+
+                val verifyData = VerifyData(
+                    warehouseCode = data.getString(&quot;warehouseCode&quot;),
+                    wmsAsnNumber = data.getString(&quot;wmsAsnNumber&quot;),
+                    storerCode = data.getString(&quot;storerCode&quot;),
+                    externReceiptNumber = data.getString(&quot;externReceiptNumber&quot;),
+                    poTotalQty = data.getString(&quot;poTotalQty&quot;),
+                    recTotalPackQty = data.getString(&quot;recTotalPackQty&quot;).toInt(),
+                    verifyList = details,
+                    locList = locations
+                )
+
+                Result.success(verifyData)
+            } else {
+                val message = jsonResponse.getString(&quot;message&quot;)
+                Result.failure(Exception(message))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+}
+</code></pre>
+<h2>關聯接口</h2>
+<p>此接口為 R5 之前置接口，輸出的 <code>locCode</code> 為 R5 的必填欄位：</p>
+<table>
+<thead>
+<tr>
+<th>上一個接口</th>
+<th>下一個接口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="R3-%E5%9B%9E%E5%82%B3%E6%94%B6%E8%B2%A8%E8%B3%87%E6%96%99.md">R3 - 回傳收貨資料</a></td>
+<td><a href="R5-%E5%9B%9E%E5%82%B3%E5%85%A8%E6%94%B6%E7%A2%BA%E8%AA%8D.md">R5 - 回傳全收確認</a></td>
+</tr>
+</tbody>
+</table>
+<h2>業務邏輯</h2>
+<ol>
+<li>
+<p><strong>資料彙總</strong>:</p>
+<ul>
+<li><code>poTotalQty</code>: 該採購單的 PO 需求總量（公斤數）</li>
+<li><code>recTotalPackQty</code>: 所有項次的已收件數總和</li>
+</ul>
+</li>
+<li>
+<p><strong>核對明細</strong>:</p>
+<ul>
+<li>列出所有 PO 項次的收貨狀況</li>
+<li><code>recPackQty</code>: 每個項次已輸入的件數</li>
+<li>0 表示該項次尚未輸入收貨資料</li>
+</ul>
+</li>
+<li>
+<p><strong>儲位選單</strong>:</p>
+<ul>
+<li>提供可選擇的儲位清單</li>
+<li>用戶從中選擇一個儲位作為 R5 的輸入</li>
+</ul>
+</li>
+</ol>
+<h2>錯誤代碼</h2>
+<table>
+<thead>
+<tr>
+<th>錯誤代碼</th>
+<th>HTTP</th>
+<th>說明</th>
+<th>因應方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F119</td>
+<td>401</td>
+<td>Token 驗證失效</td>
+<td>重新登入取得 Token</td>
+</tr>
+<tr>
+<td>F982</td>
+<td>404</td>
+<td>採購單不存在</td>
+<td>檢查 <code>wmsAsnNumber</code>、<code>externReceiptNumber</code></td>
+</tr>
+<tr>
+<td>F999</td>
+<td>500</td>
+<td>伺服器異常</td>
+<td>聯繫技術支援</td>
+</tr>
+</tbody>
+</table>
+<h2>注意事項</h2>
+<ol>
+<li>
+<p><strong>關鍵欄位儲存</strong>:</p>
+<ul>
+<li><code>locCode</code>: 儲位編號，R5 全收確認時必須傳遞</li>
+<li>用戶需要從 <code>locList</code> 中選擇一個儲位</li>
+</ul>
+</li>
+<li>
+<p><strong>核對資料展示</strong>:</p>
+<ul>
+<li>建議以表格形式展示 <code>verifyList</code></li>
+<li>顯示欄位：PO 項次、貨號、品名、到期日、已收件數</li>
+<li>高亮顯示未收完的項目（recPackQty = 0）</li>
+</ul>
+</li>
+<li>
+<p><strong>進度提示</strong>:</p>
+<ul>
+<li>顯示已收件數佔總量的百分比</li>
+<li>例如：“已收貨 300 件，總需求 500 公斤”</li>
+</ul>
+</li>
+<li>
+<p><strong>儲位選擇</strong>:</p>
+<ul>
+<li>提供下拉選單讓用戶選擇儲位</li>
+<li>儲位選擇後，R5 呼叫時傳遞 <code>recLocCode</code></li>
+</ul>
+</li>
+<li>
+<p><strong>請求時機</strong>:</p>
+<ul>
+<li>建議在所有明細項目都完成收貨輸入後，才調用 R4</li>
+<li>避免頻繁調用造成資料不一致</li>
+</ul>
+</li>
+<li>
+<p><strong>完整性檢查</strong>:</p>
+<ul>
+<li>R4 只提供核對資料，不會檢查所有項次是否皆有件數</li>
+<li>R5 會執行完整性檢查，所有 PO 項次必須皆有件數才能過帳</li>
+</ul>
+</li>
+</ol>
+
+    </main>
+  </div>
+  <script>/* no scripts by default */</script>
+  </body>
+  </html>

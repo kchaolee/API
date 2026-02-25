@@ -1,0 +1,734 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>R5-回傳全收確認</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style> :root{ --bg: #f6f7fb; --card:#fff; } </style>
+  </head>
+<body>
+  <div class="site-wrap">
+    <header class="site-header">
+      <h1 class="site-title">API 技術規格 - 靜態檔</h1>
+    </header>
+    <main class="content">
+<h1>R5 - 回傳全收確認</h1>
+<h2>接口資訊</h2>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>內容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>接口名稱</strong></td>
+<td>回傳全收確認</td>
+</tr>
+<tr>
+<td><strong>接口代號</strong></td>
+<td>R5</td>
+</tr>
+<tr>
+<td><strong>URL</strong></td>
+<td>POST <code>/wmService/v1/PO/PoCfmReceipt</code></td>
+</tr>
+<tr>
+<td><strong>通訊方式</strong></td>
+<td>POST</td>
+</tr>
+<tr>
+<td><strong>請求格式</strong></td>
+<td>JSON</td>
+</tr>
+<tr>
+<td><strong>回應格式</strong></td>
+<td>JSON</td>
+</tr>
+<tr>
+<td><strong>提供方</strong></td>
+<td>WMS</td>
+</tr>
+<tr>
+<td><strong>調用方</strong></td>
+<td>外部系統 (Android App)</td>
+</tr>
+</tbody>
+</table>
+<h2>功能說明</h2>
+<p>輸入板數與儲位，確認過帳並產生板標籤。此接口會檢查所有 PO 項次是否皆有件數，確認後將採購單狀態變更為「收貨完成」。</p>
+<h2>請求參數</h2>
+<table>
+<thead>
+<tr>
+<th>項次</th>
+<th>參數名稱</th>
+<th>參數說明</th>
+<th>傳輸型態</th>
+<th>DB資料類型</th>
+<th>字串最大長度</th>
+<th>備註</th>
+<th>必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>requestId</td>
+<td>請求編號</td>
+<td>String(36)</td>
+<td>GUID</td>
+<td>36</td>
+<td>每個請求唯一，重複提交使用同一編號</td>
+<td>V</td>
+</tr>
+<tr>
+<td>2</td>
+<td>wmsAsnNumber</td>
+<td>WMS預期收貨單號</td>
+<td>String(10)</td>
+<td>Char</td>
+<td>10</td>
+<td>帶 R1 回傳的 “WMS預期收貨單號”</td>
+<td>V</td>
+</tr>
+<tr>
+<td>3</td>
+<td>storerCode</td>
+<td>貨主代碼</td>
+<td>String(15)</td>
+<td>Char</td>
+<td>15</td>
+<td>帶 R1 回傳的 “貨主代碼”</td>
+<td>V</td>
+</tr>
+<tr>
+<td>4</td>
+<td>externReceiptNumber</td>
+<td>外部收貨編號</td>
+<td>String(30)</td>
+<td>Char</td>
+<td>30</td>
+<td>外部收貨編號＝採購單號</td>
+<td>V</td>
+</tr>
+<tr>
+<td>5</td>
+<td>recPalletQty</td>
+<td>總板數</td>
+<td>String(10)</td>
+<td>int</td>
+<td>-</td>
+<td>用戶端輸入的板數，整數</td>
+<td>-</td>
+</tr>
+<tr>
+<td>6</td>
+<td>recLocCode</td>
+<td>儲位編號</td>
+<td>String(10)</td>
+<td>Char</td>
+<td>10</td>
+<td>用戶端選擇的儲位編號，帶 R4 的 “儲位編號”</td>
+<td>V</td>
+</tr>
+</tbody>
+</table>
+<h3>請求範例</h3>
+<pre><code class="language-json">{
+  &quot;requestId&quot;: &quot;fb1a6bb8-21cd-490e-9f47-962cf99ec089&quot;,
+  &quot;wmsAsnNumber&quot;: &quot;0000000001&quot;,
+  &quot;storerCode&quot;: &quot;69512619&quot;,
+  &quot;externReceiptNumber&quot;: &quot;API21052600601&quot;,
+  &quot;recPalletQty&quot;: &quot;5&quot;,
+  &quot;recLocCode&quot;: &quot;A01&quot;
+}
+</code></pre>
+<h3>JSON Schema</h3>
+<pre><code class="language-typescript">interface R5Request {
+  requestId: string;        // 格式: UUID v4
+  wmsAsnNumber: string;    // 來自 R1 回傳
+  storerCode: string;      // 來自 R1 回傳
+  externReceiptNumber: string; // 來自 R1 回傳
+  recPalletQty: string;    // 總板數（整數字串）
+  recLocCode: string;      // 來自 R4 回傳的儲位編號
+}
+</code></pre>
+<h2>回應參數</h2>
+<table>
+<thead>
+<tr>
+<th>項次</th>
+<th>參數名稱</th>
+<th>參數說明</th>
+<th>傳輸型態</th>
+<th>DB資料類型</th>
+<th>字串最大長度</th>
+<th>備註</th>
+<th>必填</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>requestId</td>
+<td>請求編號</td>
+<td>String(36)</td>
+<td>Char</td>
+<td>36</td>
+<td>傳回原始請求編號</td>
+<td>V</td>
+</tr>
+<tr>
+<td>2</td>
+<td>status</td>
+<td>API回應結果代碼</td>
+<td>String(1)</td>
+<td>Char</td>
+<td>-</td>
+<td>成功代碼：S、失敗代碼：F</td>
+<td>V</td>
+</tr>
+<tr>
+<td>3</td>
+<td>message</td>
+<td>API回應結果訊息</td>
+<td>String(255)</td>
+<td>Char</td>
+<td>255</td>
+<td>-</td>
+<td>V</td>
+</tr>
+<tr>
+<td>4</td>
+<td>data</td>
+<td>回覆資料內容</td>
+<td>Object</td>
+<td>-</td>
+<td>-</td>
+<td>成功時有值</td>
+<td>-</td>
+</tr>
+<tr>
+<td>5</td>
+<td>warehouseCode</td>
+<td>倉庫</td>
+<td>String(10)</td>
+<td>Char</td>
+<td>10</td>
+<td>實體倉庫代碼＝回廠工廠</td>
+<td>V</td>
+</tr>
+<tr>
+<td>6</td>
+<td>wmsAsnNumber</td>
+<td>WMS預期收貨單號</td>
+<td>String(10)</td>
+<td>Char</td>
+<td>10</td>
+<td>WMS單號主鍵值</td>
+<td>V</td>
+</tr>
+<tr>
+<td>7</td>
+<td>storerCode</td>
+<td>貨主代碼</td>
+<td>String(15)</td>
+<td>Char</td>
+<td>15</td>
+<td>貨主主檔代碼</td>
+<td>V</td>
+</tr>
+<tr>
+<td>8</td>
+<td>externReceiptNumber</td>
+<td>外部收貨編號</td>
+<td>String(30)</td>
+<td>Char</td>
+<td>30</td>
+<td>外部收貨編號＝採購單號</td>
+<td>V</td>
+</tr>
+<tr>
+<td>9</td>
+<td>vendorName</td>
+<td>供應商名稱</td>
+<td>String(30)</td>
+<td>Char</td>
+<td>30</td>
+<td>-</td>
+<td>V</td>
+</tr>
+<tr>
+<td>10</td>
+<td>asnFishingGroundName</td>
+<td>單據漁廠名稱</td>
+<td>String(100)</td>
+<td>Char</td>
+<td>100</td>
+<td>明細漁廠名稱串連（資料不重覆）</td>
+<td>-</td>
+</tr>
+<tr>
+<td>11</td>
+<td>recPalletQty</td>
+<td>總板數</td>
+<td>String(10)</td>
+<td>int</td>
+<td>-</td>
+<td>總板數，整數</td>
+<td>V</td>
+</tr>
+<tr>
+<td>12</td>
+<td>asnTotalQty</td>
+<td>單據總數量</td>
+<td>String(20)</td>
+<td>decimal(19,5)</td>
+<td>-</td>
+<td>單據總數量＝PO需求總數量，小數</td>
+<td>-</td>
+</tr>
+<tr>
+<td>13</td>
+<td>asnTotalUom</td>
+<td>單據總數量單位</td>
+<td>String(18)</td>
+<td>NVarChar</td>
+<td>18</td>
+<td>WMS庫存單位</td>
+<td>-</td>
+</tr>
+<tr>
+<td>14</td>
+<td>recTotalPackQty</td>
+<td>已收總件數</td>
+<td>String(10)</td>
+<td>int</td>
+<td>-</td>
+<td>已收總件數，整數</td>
+<td>-</td>
+</tr>
+<tr>
+<td>15</td>
+<td>palletLabelList</td>
+<td>板標籤清單資料列</td>
+<td>Array</td>
+<td>-</td>
+<td>-</td>
+<td>板標籤資料，成功時有值</td>
+<td>-</td>
+</tr>
+<tr>
+<td>16</td>
+<td>lblExternReceiptNumber</td>
+<td>標籤採購單號資料</td>
+<td>String(40)</td>
+<td>Char</td>
+<td>40</td>
+<td>標籤採購單號資料，例如：採購單號 API21052600601</td>
+<td>V</td>
+</tr>
+<tr>
+<td>17</td>
+<td>lblVendorName</td>
+<td>標籤供應商名稱</td>
+<td>String(30)</td>
+<td>Char</td>
+<td>30</td>
+<td>供應商名稱</td>
+<td>V</td>
+</tr>
+<tr>
+<td>18</td>
+<td>lblPalletQty</td>
+<td>標籤板數</td>
+<td>String(10)</td>
+<td>int</td>
+<td>-</td>
+<td>板數</td>
+<td>V</td>
+</tr>
+<tr>
+<td>19</td>
+<td>lblLocCode</td>
+<td>標籤儲位編號</td>
+<td>String(10)</td>
+<td>Char</td>
+<td>10</td>
+<td>儲位編號</td>
+<td>V</td>
+</tr>
+<tr>
+<td>20</td>
+<td>lblSku</td>
+<td>標籤貨號</td>
+<td>String(50)</td>
+<td>Char</td>
+<td>50</td>
+<td>貨號</td>
+<td>V</td>
+</tr>
+<tr>
+<td>21</td>
+<td>lblItemName</td>
+<td>標籤品名</td>
+<td>String(200)</td>
+<td>NVarChar</td>
+<td>200</td>
+<td>品名</td>
+<td>V</td>
+</tr>
+</tbody>
+</table>
+<h3>JSON Schema (回應)</h3>
+<pre><code class="language-typescript">interface R5Response {
+  requestId: string;
+  status: &quot;S&quot; | &quot;F&quot;;
+  message: string;
+  data: {
+    warehouseCode: string;
+    wmsAsnNumber: string;
+    storerCode: string;
+    externReceiptNumber: string;
+    vendorName: string;
+    asnFishingGroundName: string;  // 明細漁廠名稱串連
+    recPalletQty: string;          // 總板數
+    asnTotalQty: string;           // 單據總數量
+    asnTotalUom: string;           // 單據總數量單位
+    recTotalPackQty: string;       // 已收總件數
+    palletLabelList: Array&lt;{
+      lblExternReceiptNumber: string;  // 標籤採購單號
+      lblVendorName: string;           // 標籤供應商名稱
+      lblPalletQty: string;            // 標籤板數
+      lblLocCode: string;              // 標籤儲位編號
+      lblSku: string;                  // 標籤貨號
+      lblItemName: string;             // 標籤品名
+    }&gt;;
+  } | null;
+  errors: Array&lt;{code: string; message: string}&gt; | null;
+}
+</code></pre>
+<h3>回應範例 (成功)</h3>
+<pre><code class="language-json">{
+  &quot;requestId&quot;: &quot;fb1a6bb8-21cd-490e-9f47-962cf99ec089&quot;,
+  &quot;status&quot;: &quot;S&quot;,
+  &quot;message&quot;: &quot;收貨確認成功&quot;,
+  &quot;data&quot;: {
+    &quot;warehouseCode&quot;: &quot;1020&quot;,
+    &quot;wmsAsnNumber&quot;: &quot;0000000001&quot;,
+    &quot;storerCode&quot;: &quot;69512619&quot;,
+    &quot;externReceiptNumber&quot;: &quot;API21052600601&quot;,
+    &quot;vendorName&quot;: &quot;供應商名稱&quot;,
+    &quot;asnFishingGroundName&quot;: &quot;漁廠A、漁廠B&quot;,
+    &quot;recPalletQty&quot;: &quot;5&quot;,
+    &quot;asnTotalQty&quot;: &quot;500.000&quot;,
+    &quot;asnTotalUom&quot;: &quot;KG&quot;,
+    &quot;recTotalPackQty&quot;: &quot;300&quot;,
+    &quot;palletLabelList&quot;: [
+      {
+        &quot;lblExternReceiptNumber&quot;: &quot;採購單號 API21052600601&quot;,
+        &quot;lblVendorName&quot;: &quot;供應商名稱&quot;,
+        &quot;lblPalletQty&quot;: &quot;5&quot;,
+        &quot;lblLocCode&quot;: &quot;A01&quot;,
+        &quot;lblSku&quot;: &quot;SKU001&quot;,
+        &quot;lblItemName&quot;: &quot;鮭魚切片&quot;
+      }
+    ]
+  },
+  &quot;errors&quot;: null
+}
+</code></pre>
+<h3>回應範例 (失敗 - 項次未收完)</h3>
+<pre><code class="language-json">{
+  &quot;requestId&quot;: &quot;fb1a6bb8-21cd-490e-9f47-962cf99ec089&quot;,
+  &quot;status&quot;: &quot;F&quot;,
+  &quot;message&quot;: &quot;失敗-資料的邏輯錯誤&quot;,
+  &quot;data&quot;: null,
+  &quot;errors&quot;: [
+    {
+      &quot;code&quot;: &quot;F983&quot;,
+      &quot;message&quot;: &quot;項次00010未有件數&quot;
+    }
+  ]
+}
+</code></pre>
+<h3>回應範例 (失敗 - 採購單已過帳)</h3>
+<pre><code class="language-json">{
+  &quot;requestId&quot;: &quot;fb1a6bb8-21cd-490e-9f47-962cf99ec089&quot;,
+  &quot;status&quot;: &quot;F&quot;,
+  &quot;message&quot;: &quot;失敗-資料的邏輯錯誤&quot;,
+  &quot;data&quot;: null,
+  &quot;errors&quot;: [
+    {
+      &quot;code&quot;: &quot;F983&quot;,
+      &quot;message&quot;: &quot;採購單已過帳，無法再次確認&quot;
+    }
+  ]
+}
+</code></pre>
+<h2>使用方式</h2>
+<h3>Curl 範例</h3>
+<pre><code class="language-bash">curl -X POST http://192.168.x.x/wmService/v1/PO/PoCfmReceipt \
+  -H &quot;Authorization: Bearer {accessToken}&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d '{
+    &quot;requestId&quot;: &quot;fb1a6bb8-21cd-490e-9f47-962cf99ec089&quot;,
+    &quot;wmsAsnNumber&quot;: &quot;0000000001&quot;,
+    &quot;storerCode&quot;: &quot;69512619&quot;,
+    &quot;externReceiptNumber&quot;: &quot;API21052600601&quot;,
+    &quot;recPalletQty&quot;: &quot;5&quot;,
+    &quot;recLocCode&quot;: &quot;A01&quot;
+  }'
+</code></pre>
+<h3>Android Kotlin 範例</h3>
+<pre><code class="language-kotlin">data class ConfirmReceiptResult(
+    val warehouseCode: String,
+    val wmsAsnNumber: String,
+    val storerCode: String,
+    val externReceiptNumber: String,
+    val vendorName: String,
+    val asnFishingGroundName: String,
+    val recPalletQty: Int,
+    val asnTotalQty: String,       // 單據總數量
+    val asnTotalUom: String,       // 單據總數量單位
+    val recTotalPackQty: Int,      // 已收總件數
+    val palletLabelList: List&lt;PalletLabel&gt;
+)
+
+data class PalletLabel(
+    val lblExternReceiptNumber: String,
+    val lblVendorName: String,
+    val lblPalletQty: Int,
+    val lblLocCode: String,
+    val lblSku: String,
+    val lblItemName: String
+)
+
+class ReceivingRepository {
+    private val baseUrl = &quot;http://192.168.x.x/wmService/v1&quot;
+    private val client = OkHttpClient()
+
+    suspend fun confirmReceipt(
+        wmsAsnNumber: String,
+        storerCode: String,
+        externReceiptNumber: String,
+        recPalletQty: Int,
+        recLocCode: String
+    ): Result&lt;ConfirmReceiptResult&gt; = withContext(Dispatchers.IO) {
+        val requestId = UUID.randomUUID().toString()
+        val token = getAccessToken()
+
+        try {
+            val jsonRequest = JSONObject().apply {
+                put(&quot;requestId&quot;, requestId)
+                put(&quot;wmsAsnNumber&quot;, wmsAsnNumber)
+                put(&quot;storerCode&quot;, storerCode)
+                put(&quot;externReceiptNumber&quot;, externReceiptNumber)
+                put(&quot;recPalletQty&quot;, recPalletQty.toString())
+                put(&quot;recLocCode&quot;, recLocCode)
+            }
+
+            val body = jsonRequest.toString().toRequestBody(&quot;application/json&quot;.toMediaType())
+            val request = Request.Builder()
+                .url(&quot;$baseUrl/PO/PoCfmReceipt&quot;)
+                .addHeader(&quot;Authorization&quot;, &quot;Bearer $token&quot;)
+                .post(body)
+                .build()
+
+            val response = client.newCall(request).execute()
+            val responseBody = response.body?.string() ?: throw Exception(&quot;無回應&quot;)
+
+            val jsonResponse = JSONObject(responseBody)
+
+            if (jsonResponse.getString(&quot;status&quot;) == &quot;S&quot;) {
+                val data = jsonResponse.getJSONObject(&quot;data&quot;)
+
+                // 解析板標籤清單
+                val labelList = data.getJSONArray(&quot;palletLabelList&quot;)
+                val labels = mutableListOf&lt;PalletLabel&gt;()
+                for (i in 0 until labelList.length()) {
+                    val label = labelList.getJSONObject(i)
+                    labels.add(
+                        PalletLabel(
+                            lblExternReceiptNumber = label.getString(&quot;lblExternReceiptNumber&quot;),
+                            lblVendorName = label.getString(&quot;lblVendorName&quot;),
+                            lblPalletQty = label.getString(&quot;lblPalletQty&quot;).toInt(),
+                            lblLocCode = label.getString(&quot;lblLocCode&quot;),
+                            lblSku = label.getString(&quot;lblSku&quot;),
+                            lblItemName = label.getString(&quot;lblItemName&quot;)
+                        )
+                    )
+                }
+
+                val result = ConfirmReceiptResult(
+                    warehouseCode = data.getString(&quot;warehouseCode&quot;),
+                    wmsAsnNumber = data.getString(&quot;wmsAsnNumber&quot;),
+                    storerCode = data.getString(&quot;storerCode&quot;),
+                    externReceiptNumber = data.getString(&quot;externReceiptNumber&quot;),
+                    vendorName = data.getString(&quot;vendorName&quot;),
+                    asnFishingGroundName = data.getString(&quot;asnFishingGroundName&quot;),
+                    recPalletQty = data.getString(&quot;recPalletQty&quot;).toInt(),
+                    asnTotalQty = data.getString(&quot;asnTotalQty&quot;),
+                    asnTotalUom = data.getString(&quot;asnTotalUom&quot;),
+                    recTotalPackQty = data.getString(&quot;recTotalPackQty&quot;).toInt(),
+                    palletLabelList = labels
+                )
+
+                Result.success(result)
+            } else {
+                val message = jsonResponse.getString(&quot;message&quot;)
+                Result.failure(Exception(message))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+}
+</code></pre>
+<h2>關聯接口</h2>
+<p>此接口為進貨作業的最後一個接口：</p>
+<table>
+<thead>
+<tr>
+<th>上一個接口</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="R4-%E5%8F%96%E5%BE%97%E6%94%B6%E8%B2%A8%E6%A0%B8%E5%B0%8D%E6%98%8E%E7%B4%B0.md">R4 - 取得收貨核對明細</a></td>
+<td>提供 <code>recLocCode</code> 作為 R5 輸入</td>
+</tr>
+</tbody>
+</table>
+<h2>檢核規則</h2>
+<ol>
+<li>
+<p><strong>完整性檢查</strong>:</p>
+<ul>
+<li>檢查所有 PO 項次是否皆有件數</li>
+<li>若有任何項次件數為 0，回傳 F983 錯誤，訊息包含未有件數的項次代碼</li>
+</ul>
+</li>
+<li>
+<p><strong>狀態檢查</strong>:</p>
+<ul>
+<li>檢查採購單是否已過帳</li>
+<li>若已過帳，回傳 F983 錯誤</li>
+</ul>
+</li>
+<li>
+<p><strong>板數驗證</strong>:</p>
+<ul>
+<li><code>recPalletQty</code> 必須為整數</li>
+<li>若非整數，回傳 F981 錯誤</li>
+</ul>
+</li>
+</ol>
+<h2>錯誤代碼</h2>
+<table>
+<thead>
+<tr>
+<th>錯誤代碼</th>
+<th>HTTP</th>
+<th>說明</th>
+<th>因應方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F119</td>
+<td>401</td>
+<td>Token 驗證失效</td>
+<td>重新登入取得 Token</td>
+</tr>
+<tr>
+<td>F981</td>
+<td>400</td>
+<td>資料格式錯誤</td>
+<td>檢查 <code>recPalletQty</code> 是否為整數</td>
+</tr>
+<tr>
+<td>F983</td>
+<td>400</td>
+<td>業務邏輯錯誤</td>
+<td>1. 檢查所有項次是否皆有件數<br>2. 檢查採購單是否已過帳</td>
+</tr>
+<tr>
+<td>F999</td>
+<td>500</td>
+<td>伺服器異常</td>
+<td>聯繫技術支援</td>
+</tr>
+</tbody>
+</table>
+<h2>注意事項</h2>
+<ol>
+<li>
+<p><strong>板標籤處理</strong>:</p>
+<ul>
+<li>成功回應會包含 <code>palletLabelList</code>，用戶應列印標籤</li>
+<li>標籤內容包含採購單號、供應商、板數、儲位、貨號、品名</li>
+<li>可多個板合併列印一張標籤</li>
+</ul>
+</li>
+<li>
+<p><strong>完整性檢查</strong>:</p>
+<ul>
+<li>R5 執行前，建議用戶端先自行檢查所有項次是否皆有件數</li>
+<li>避免呼叫 R5 後才收到錯誤</li>
+</ul>
+</li>
+<li>
+<p><strong>板數輸入</strong>:</p>
+<ul>
+<li><code>recPalletQty</code> 為用戶輸入的板數總量</li>
+<li>通常為本次收貨所使用的板數</li>
+</ul>
+</li>
+<li>
+<p><strong>儲位選擇</strong>:</p>
+<ul>
+<li><code>recLocCode</code> 必須來自 R4 的 <code>locList</code></li>
+<li>用戶從 R4 的儲位選單中選擇</li>
+</ul>
+</li>
+<li>
+<p><strong>狀態變更</strong>:</p>
+<ul>
+<li>R5 成功後，採購單狀態變更為「收貨完成」</li>
+<li>該採購單後續無法再次呼叫 R5</li>
+<li>若需修改，需聯繫後台人員</li>
+</ul>
+</li>
+<li>
+<p><strong>重複提交防護</strong>:</p>
+<ul>
+<li>同一採購單的第二個 R5 呼叫會收到 F983 錯誤</li>
+<li>用戶端應顯示「此採購單已完成收貨」訊息</li>
+</ul>
+</li>
+<li>
+<p><strong>列印功能</strong>:</p>
+<ul>
+<li>建議在 R5 成功後自動列印板標籤</li>
+<li>或提供「重新列印標籤」功能（需後端支援）</li>
+</ul>
+</li>
+<li>
+<p><strong>異常處理</strong>:</p>
+<ul>
+<li>若 R5 呼叫失敗，用戶端應提供「重新嘗試」選項</li>
+<li>但務必檢查是否為可重試錯誤（如網路逾時）</li>
+</ul>
+</li>
+</ol>
+
+    </main>
+  </div>
+  <script>/* no scripts by default */</script>
+  </body>
+  </html>
