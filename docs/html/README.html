@@ -10,23 +10,41 @@
 <body>
   <div class="site-wrap">
     <header class="site-header">
-      <h1 class="site-title">API 技術規格 - 靜態檔</h1>
+        <h1 class="site-title">機場 WMS API 技術規格書</h1>
     </header>
     <main class="content">
 <h1>API 技術規格文件</h1>
 <h2>概述</h2>
-<p>本文档定義機場 WMS（倉儲管理系統）的 API 技術規格，供 Android App 客戶端進行整合開發。</p>
-<p><strong>版本</strong>: v1.01<br>
-<strong>更新日期</strong>: 2024-12-10</p>
+<p>本文件定義 WMS（倉儲管理系統）的 API 技術規格，供 Android App 客戶端進行整合開發。</p>
+
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>日期</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>v1.01</td>
+<td>2026-02-23</td>
+<td>初始版本，定義認證、進貨作業介面規格</td>
+</tr>
+</tbody>
+</table>
+
+<pagebreak></pagebreak>
+
 <h2>目錄</h2>
 <ul>
 <li><a href="#%E9%80%9A%E7%94%A8%E8%A6%8F%E7%AF%84">通用規範</a></li>
 <li><a href="authentication/A1-%E7%99%BB%E5%85%A5%E9%A9%97%E8%AD%89.md">認證機制</a></li>
 <li><a href="receiving/R1-R5-%E9%80%B2%E8%B2%A8%E4%BD%9C%E6%A5%AD%E7%B8%BD%E8%A6%BD.md">進貨作業</a></li>
-<li><a href="shipping/README.md">出貨作業</a> (待開發)</li>
 </ul>
+<pagebreak></pagebreak>
 <h2>通用規範</h2>
-<h3>基礎資訊</h3>
+<h3>● 基礎資訊</h3>
 <table>
 <thead>
 <tr>
@@ -41,7 +59,7 @@
 </tr>
 <tr>
 <td>通訊協定</td>
-<td>HTTPS (生產環境) / HTTP (測試環境)</td>
+<td>HTTP/HTTPS</td>
 </tr>
 <tr>
 <td>請求格式</td>
@@ -57,8 +75,9 @@
 </tr>
 </tbody>
 </table>
-<h3>全域回應格式標準</h3>
-<p>所有 API 統一使用 JSON 格式回應：</p>
+
+<h3>● 全域回應格式標準</h3>
+<p>API 統一使用 JSON 格式回應：</p>
 <p><strong>成功回應</strong>:</p>
 <pre><code class="language-json">{
   &quot;requestId&quot;: &quot;請求編號 (GUID)&quot;,
@@ -82,7 +101,7 @@
   ]
 }
 </code></pre>
-<h3>HTTP 狀態碼</h3>
+<h3>● HTTP 狀態碼</h3>
 <table>
 <thead>
 <tr>
@@ -119,7 +138,7 @@
 </tr>
 </tbody>
 </table>
-<h3>錯誤代碼體系</h3>
+<h3>● 錯誤代碼體系</h3>
 <table>
 <thead>
 <tr>
@@ -189,12 +208,15 @@
 </tr>
 </tbody>
 </table>
-<h3>認證機制</h3>
+<h3>● 認證機制</h3>
 <p>所有 API 請求（除登入接口外）均需在 HTTP Header 中傳遞 Token：</p>
 <pre><code>Authorization: Bearer {accessToken}
 </code></pre>
 <p>Token 透過 <strong>A1 登入驗證</strong> 接口取得，有效期建議為 24 小時。</p>
 <p>詳細請參考：<a href="authentication/A1-%E7%99%BB%E5%85%A5%E9%A9%97%E8%AD%89.md">認證機制 (A1)</a></p>
+
+<br>
+<br>
 <h3>通用請求參數</h3>
 <table>
 <thead>
@@ -215,6 +237,9 @@
 </tbody>
 </table>
 <p><strong>重要</strong>: 同一個請求若重複提交，必須使用相同的 requestId，方便伺服端進行重複請求防護。</p>
+<br>
+<br>
+
 <h3>資料型別說明</h3>
 <table>
 <thead>
@@ -291,13 +316,13 @@
 </ul>
 </li>
 </ol>
-<h2>接口列表</h2>
+<h2>介面列表</h2>
 <h3>進貨作業 (Receiving)</h3>
 <table>
 <thead>
 <tr>
 <th>代號</th>
-<th>接口名稱</th>
+<th>介面名稱</th>
 <th>URL</th>
 <th>說明</th>
 </tr>
@@ -341,65 +366,13 @@
 </tr>
 </tbody>
 </table>
-<h3>出貨作業 (Shipping)</h3>
-<table>
-<thead>
-<tr>
-<th>代號</th>
-<th>接口名稱</th>
-<th>URL</th>
-<th>說明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>P1</td>
-<td>取得出貨訂單清單</td>
-<td>POST /ORDER/OrderHeaderData</td>
-<td>取得未完成出貨的訂單清單</td>
-</tr>
-<tr>
-<td>P2</td>
-<td>取得揀貨處理資料</td>
-<td>POST /ORDER/OrderPickingData</td>
-<td>取得揀貨明細</td>
-</tr>
-<tr>
-<td>P3</td>
-<td>回傳揀貨確認資料</td>
-<td>POST /ORDER/OrderCfmPacking</td>
-<td>確認揀貨並配貨</td>
-</tr>
-</tbody>
-</table>
+
 <blockquote>
-<p><strong>出貨作業接口預留給未來開發使用</strong></p>
 </blockquote>
-<h2>版本紀錄</h2>
-<table>
-<thead>
-<tr>
-<th>版本</th>
-<th>日期</th>
-<th>說明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>v1.01</td>
-<td>2024-12-10</td>
-<td>初始版本，定義進貨作業接口規格</td>
-</tr>
-</tbody>
-</table>
-<h2>聯絡資訊</h2>
-<p>如有技術問題，請聯繫：</p>
-<ul>
-<li>技術支援：[待補充]</li>
-<li>文件維護：[待補充]</li>
+
 </ul>
 
-    </main>
+ </main>
   </div>
   <script>/* no scripts by default */</script>
   </body>

@@ -7,6 +7,8 @@
 ```
 docs/api/
 ├── README.md                                    # API 總覽與通用規範
+├── encryption/
+│   └── 加密說明.md                              # AES 256 加密詳解 (含 C# / Java / Kotlin 範例)
 ├── authentication/
 │   └── A1-登入驗證.md                          # 登入驗證接口
 ├── receiving/
@@ -19,7 +21,8 @@ docs/api/
 ├── shipping/
 │   └── README.md                                # 出貨作業（預留開發）
 └── examples/
-    └── Android-Kotlin-完整範例.md                # Android Kotlin 完整整合範例
+    ├── Android-Kotlin-完整範例.md                # Android Kotlin 完整整合範例
+    └── CSharp-完整範例.md                       # C# 完整整合範例
 ```
 
 ## 閱讀順序建議
@@ -27,8 +30,9 @@ docs/api/
 ### 初次閱讀
 
 1. **README.md** - 了解 API 總覽、通用規範、錯誤代碼
-2. **authentication/A1-登入驗證.md** - 了解如何取得授權 Token
-3. **receiving/R1-R5-進貨作業總覽.md** - 了解進貨作業的完整流程
+2. **encryption/加密說明.md** - 了解 AES 256 加密流程與實作範例
+3. **authentication/A1-登入驗證.md** - 了解如何取得授權 Token
+4. **receiving/R1-R5-進貨作業總覽.md** - 了解進貨作業的完整流程
 
 ### 接口開發參考
 
@@ -41,6 +45,7 @@ docs/api/
 ### 整合實作
 
 9. **examples/Android-Kotlin-完整範例.md** - 完整的 Android Kotlin 整合範例
+10. **examples/CSharp-完整範例.md** - 完整的 C# 整合範例
 
 ## 關鍵概念
 
@@ -86,10 +91,13 @@ docs/api/
 ### 我需要知道...
 
 - **如何呼叫 API？** → 查看 [README.md](../README.md) 的通用規範
+- **如何加密請求？** → 查看 [加密說明.md](../encryption/加密說明.md)
+- **C# 加解密範例？** → 查看 [加密說明.md](../encryption/加密說明.md) 的 C# 實作
 - **如何取得 Token？** → 查看 [A1-登入驗證.md](../authentication/A1-登入驗證.md)
 - **進貨作業流程？** → 查看 [R1-R5-進貨作業總覽.md](../receiving/R1-R5-進貨作業總覽.md)
 - **某個接口的詳細參數？** → 查看對應的接口文件
-- **完整的程式範例？** → 查看 [Android-Kotlin-完整範例.md](../examples/Android-Kotlin-完整範例.md)
+- **完整的 Android Kotlin 範例？** → 查看 [Android-Kotlin-完整範例.md](../examples/Android-Kotlin-完整範例.md)
+- **完整的 C# 範例？** → 查看 [CSharp-完整範例.md](../examples/CSharp-完整範例.md)
 - **錯誤代碼說明？** → 查看 [README.md](../README.md) 的錯誤代碼表
 - **資料型別定義？** → 查看各接口文件中的 JSON Schema
 
