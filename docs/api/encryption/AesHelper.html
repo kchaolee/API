@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>加密相關說明 - WMS API</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #764ba2;
+            font-size: 2em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-left: 20px;
+            border-left: 5px solid #764ba2;
+        }
+
+        h3 {
+            color: #667eea;
+            font-size: 1.5em;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        h4 {
+            color: #555;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 8px;
+        }
+
+        p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 40px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f0f0f0;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        code {
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+        }
+
+        .code-inline {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            color: #e91e63;
+        }
+
+        strong {
+            color: #667eea;
+        }
+
+        .flowchart {
+            background: #f8f9fa;
+            padding: 20px;
+            border-left: 5px solid #764ba2;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .note {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .note-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .toc {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 5px solid #667eea;
+        }
+
+        .toc-title {
+            font-size: 1.3em;
+            color: #667eea;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        .toc ul ul {
+            padding-left: 20px;
+        }
+
+        .toc li {
+            margin: 8px 0;
+        }
+
+        .toc a {
+            color: #667eea;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .toc a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                border: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>加密相關說明</h1>
+
+        <div class="toc">
+            <div class="toc-title">目錄</div>
+            <ul>
+                <li><a href="#概述">概述</a></li>
+                <li><a href="#加密規格">加密規格</a></li>
+                <li><a href="#請求與回應結構">請求與回應結構</a></li>
+                <li><a href="#加密流程圖">加密流程圖</a></li>
+                <li><a href="#實作範例">實作範例</a>
+                    <ul>
+                        <li><a href="#c-aes-加解密">C# AES 加解密</a></li>
+                        <li><a href="#android-javakotlin-aes-加解密">Android (Java/Kotlin) AES 加解密</a></li>
+                    </ul>
+                </li>
+                <li><a href="#注意事項">注意事項</a></li>
+                <li><a href="#未提供資訊">未提供資訊</a></li>
+            </ul>
+        </div>
+
+        <h2 id="概述">概述</h2>
+        <p>API 的請求與回應內容需經過 AES 256 加密處理，並使用 <code class="code-inline">RequestData</code> 和 <code class="code-inline">ReturnData</code> 結構包裹加密後的數據。</p>
+
+        <h2 id="加密規格">加密規格</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>項目</th>
+                    <th>說明</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>加密演算法</strong></td>
+                    <td>AES 256</td>
+                </tr>
+                <tr>
+                    <td><strong>加密模式</strong></td>
+                    <td>CBC (Cipher Block Chaining)</td>
+                </tr>
+                <tr>
+                    <td><strong>填充方式</strong></td>
+                    <td>PKCS7</td>
+                </tr>
+                <tr>
+                    <td><strong>金鑰 (AES Key)</strong></td>
+                    <td>後續提供 (至少 22 bytes)</td>
+                </tr>
+                <tr>
+                    <td><strong>初始化向量 (IV)</strong></td>
+                    <td>從 AES Key 的第 7~22 字元提取 (16 字元)</td>
+                </tr>
+                <tr>
+                    <td><strong>金鑰長度</strong></td>
+                    <td>256 bits (32 bytes)</td>
+                </tr>
+                <tr>
+                    <td><strong>區塊大小</strong></td>
+                    <td>128 bits (16 bytes)</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="note">
+            <div class="note-title">IV 生成說明</div>
+            <ul>
+                <li>IV 不需要單獨提供</li>
+                <li>直接從 AES Key 的第 7~22 字元（即索引 6~21，共 16 個字元）提取作為 IV</li>
+                <li>例如：AES Key = <code class="code-inline">"Your32ByteKeyHere1234567890123456"</code>
+                    <ul>
+                        <li>AES Key (前 32 bytes): <code class="code-inline">"Your32ByteKeyHere12345678901"</code></li>
+                        <li>IV (第 7~22 字元): <code class="code-inline">"yKeyHere123456789"</code></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <h2 id="請求與回應結構">請求與回應結構</h2>
+
+        <h3>請求結構</h3>
+        <p><strong>外層格式</strong>：</p>
+        <pre><code>{
+  "RequestData": "AES256加密後的數據"
+}</code></pre>
+
+        <p><strong>加密流程</strong>：</p>
+        <ol>
+            <li>準備內層 JSON 數據（例如登入請求）</li>
+            <li>將內層 JSON 字串進行 minimize（移除多餘空白）</li>
+            <li>將 minimize 後的字串進行 AES 256 加密
+                <ul>
+                    <li>使用 AES Key 的前 32 字元作為加密金鑰</li>
+                    <li>使用 AES Key 的第 7~22 字元作為初始化向量 (IV)</li>
+                </ul>
+            </li>
+            <li>將加密後的二進制數據轉換為 Base64 字串</li>
+            <li>將 Base64 字串放置於外層請求的 <code class="code-inline">RequestData</code> 欄位中</li>
+        </ol>
+
+        <h3>回應結構</h3>
+        <p><strong>外層格式</strong>：</p>
+        <pre><code>{
+  "ReturnData": "AES256加密後的數據"
+}</code></pre>
+
+        <p><strong>解密流程</strong>：</p>
+        <ol>
+            <li>從外層回應的 <code class="code-inline">ReturnData</code> 欄位中提取 Base64 字串</li>
+            <li>將 Base64 字串轉換回二進制數據</li>
+            <li>對二進制數據進行 AES 256 解密
+                <ul>
+                    <li>使用 AES Key 的前 32 字元作為加密金鑰</li>
+                    <li>使用 AES Key 的第 7~22 字元作為初始化向量 (IV)</li>
+                </ul>
+            </li>
+            <li>解密後的字串即為內層 JSON 回應數據</li>
+        </ol>
+
+        <h2 id="加密流程圖">加密流程圖</h2>
+        <div class="flowchart">┌─────────────────────────────────────────────────────────────────┐
+│                         請求加密流程                              │
+├─────────────────────────────────────────────────────────────────┤
+│ 1. 準備內層 JSON                                              │
+│    {"requestId":"...","account":"user001","password":"..."}    │
+│                             ↓                                  │
+│ 2. Minimize JSON                                             │
+│    {"requestId":"...","account":"user001","password":"..."}   │
+│                             ↓                                  │
+│ 3. AES 256 加密                                             │
+│    - AES Key: 後續提供 (至少 22 bytes)                         │
+│    - IV: 從 AES Key 第 7~22 字元提取                          │
+│    二進制加密數據                                             │
+│                             ↓                                  │
+│ 4. Base64 編碼                                              │
+│    "8uhB22wljs/Zqm4jfDrcVKIHQc0cBwjkgrPv3C4xM+hFXfz2..."     │
+│                             ↓                                  │
+│ 5. 塞入外層 RequestData                                       │
+│    {"RequestData":"8uhB22wljs/Zqm4jfDrcVKIHQc0cBwjkgr..."}   │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│                         回應解密流程                              │
+├─────────────────────────────────────────────────────────────────┤
+│ 1. 從外層 ReturnData 提取                                      │
+│    {"ReturnData":"8uhB22wljs/Zqm4jfDrcVKIHQc0cBwjkgr..."}    │
+│                             ↓                                  │
+│ 2. Base64 解碼                                              │
+│    二進制加密數據                                             │
+│                             ↓                                  │
+│ 3. AES 256 解密                                             │
+│    - AES Key: 後續提供 (至少 22 bytes)                         │
+│    - IV: 從 AES Key 第 7~22 字元提取                          │
+│    內層 JSON 字串                                             │
+│                             ↓                                  │
+│ 4. 解析 JSON                                                  │
+│    {"requestId":"...","status":"S","data":{...},"errors":null}│
+└─────────────────────────────────────────────────────────────────┘</div>
+
+        <h2 id="實作範例">實作範例</h2>
+
+        <h3 id="c-aes-加解密">C# AES 加解密</h3>
+        <pre><code>using System;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+
+public static class AesHelper
+{
+    /// &lt;summary&gt;
+    /// 從 AES Key 中提取 IV (第 7~22 字元)
+    /// &lt;/summary&gt;
+    private static byte[] ExtractIvFromKey(byte[] key)
+    {
+        // IV 從 key 的索引 6~21 (第 7~22 字元) 提取
+        byte[] iv = new byte[16];
+        int keyLength = Math.Min(key.Length, 22);
+        int start = 6;
+        for (int i = 0; i &lt; 16 &&amp; (start + i) &lt; keyLength; i++)
+        {
+            iv[i] = key[start + i];
+        }
+        // 如果 key 長度不足 22，用 0 補足
+        for (int i = keyLength - start; i &lt; 16; i++)
+            iv[i] = 0;
+        return iv;
+    }
+
+    /// &lt;summary&gt;
+    /// 確保 AES Key 至少有 32 bytes (256 bits)
+    /// &lt;/summary&gt;
+    private static byte[] EnsureKeyLength(byte[] key)
+    {
+        byte[] fullKey = new byte[32];
+        int copyLength = Math.Min(key.Length, 32);
+        Array.Copy(key, 0, fullKey, 0, copyLength);
+        // 如果 key 長度不足 32，用 0 補足
+        return fullKey;
+    }
+
+    /// &lt;summary&gt;
+    /// 將 JSON 物件加密並塞入 RequestData 結構
+    /// &lt;/summary&gt;
+    public static string EncryptRequest(object jsonData, byte[] key)
+    {
+        // 1. 將物件序列化為 JSON 字串
+        string jsonString = JsonSerializer.Serialize(jsonData, new JsonSerializerOptions
+        {
+            WriteIndented = false  // minimize JSON
+        });
+
+        // 2. 準備 AES Key (32 bytes) 和從中提取 IV (16 bytes)
+        byte[] fullKey = EnsureKeyLength(key);
+        byte[] iv = ExtractIvFromKey(key);
+
+        // 3. AES 256 加密
+        string encryptedString = Encrypt(jsonString, fullKey, iv);
+
+        // 4. 構造外層請求
+        var outerRequest = new { RequestData = encryptedString };
+        return JsonSerializer.Serialize(outerRequest, new JsonSerializerOptions
+        {
+            WriteIndented = false
+        });
+    }
+
+    /// &lt;summary&gt;
+    /// 從 ReturnData 結構中解密回應
+    /// &lt;/summary&gt;
+    public static T DecryptResponse&lt;T&gt;(string responseJson, byte[] key)
+    {
+        // 1. 解析外層回應
+        var outerResponse = JsonSerializer.Deserialize&lt;ReturnDataWrapper&gt;(responseJson);
+        if (outerResponse?.ReturnData == null)
+            throw new Exception("Invalid response format");
+
+        // 2. 準備 AES Key (32 bytes) 和從中提取 IV (16 bytes)
+        byte[] fullKey = EnsureKeyLength(key);
+        byte[] iv = ExtractIvFromKey(key);
+
+        // 3. 解密 ReturnData
+        string decryptedString = Decrypt(outerResponse.ReturnData, fullKey, iv);
+
+        // 4. 反序列化為回應物件
+        return JsonSerializer.Deserialize&lt;T&gt;(decryptedString) 
+               ?? throw new Exception("Failed to deserialize response");
+    }
+
+    public static string Encrypt(string plainText, byte[] key, byte[] iv)
+    {
+        using var aes = Aes.Create();
+        aes.Key = key;
+        aes.IV = iv;
+        aes.Mode = CipherMode.CBC;
+        aes.Padding = PaddingMode.PKCS7;
+
+        using var encryptor = aes.CreateEncryptor();
+        using var ms = new MemoryStream();
+        using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+        using (var sw = new StreamWriter(cs))
+        {
+            sw.Write(plainText);
+        }
+        return Convert.ToBase64String(ms.ToArray());
+    }
+
+    public static string Decrypt(string cipherText, byte[] key, byte[] iv)
+    {
+        using var aes = Aes.Create();
+        aes.Key = key;
+        aes.IV = iv;
+        aes.Mode = CipherMode.CBC;
+        aes.Padding = PaddingMode.PKCS7;
+
+        using var decryptor = aes.CreateDecryptor();
+        using var ms = new MemoryStream(Convert.FromBase64String(cipherText));
+        using var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read);
+        using var sr = new StreamReader(cs);
+        return sr.ReadToEnd();
+    }
+
+    // 字串轉 byte[]
+    public static byte[] StringToBytes(string str)
+    {
+        return Encoding.UTF8.GetBytes(str);
+    }
+
+    public class ReturnDataWrapper
+    {
+        public string ReturnData { get; set; } = string.Empty;
+    }
+}</code></pre>
+
+        <h4>C# 使用範例</h4>
+        <pre><code>// 假設從配置文件或安全儲存中獲取 AES Key
+// AES Key 至少需要 22 個字元 (bytes)，前 32 個字元作為金鑰，第 7~22 個字元作為 IV
+string aesKeyString = "Your32ByteKeyHere1234567890123456"; // 至少 22 個字元
+
+byte[] aesKey = AesHelper.StringToBytes(aesKeyString);
+
+// ===== 登入請求範例 =====
+var loginData = new {
+    requestId = Guid.NewGuid().ToString(),
+    account = "user001",
+    password = "password123"
+};
+
+// 加密並構造外層請求 (IV 會自動從 AES Key 的第 7~22 字元提取)
+string encryptedRequest = AesHelper.EncryptRequest(loginData, aesKey);
+Console.WriteLine("請求: " + encryptedRequest);
+// 輸出: {"RequestData":"8uhB22wljs/Zqm4jfDrcVKIHQc0cBwjkgr..."}
+
+// ===== 發送請求至 API =====
+// ... 使用 HttpClient 發送 encryptedRequest ...
+
+// ===== 解密回應範例 =====
+string apiResponse = "{\"ReturnData\":\"8uhB22wljs/Zqm4jfDrcVKIHQc0cBwjkgr...\"}";
+
+// 解密回應 (IV 會自動從 AES Key 的第 7~22 字元提取)
+var responseData = AesHelper.DeserializeResponse&lt;LoginResponse&gt;(apiResponse, aesKey);
+Console.WriteLine("狀態: " + responseData.status);
+Console.WriteLine("訊息: " + responseData.message);
+Console.WriteLine("Token: " + responseData.data.accessToken);</code></pre>
+
+        <h3 id="android-javakotlin-aes-加解密">Android (Java/Kotlin) AES 加解密</h3>
+
+        <h4>Java 版本</h4>
+        <pre><code>import javax.crypto.*;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.Base64;
+import java.nio.charset.StandardCharsets;
+
+public class AesUtil {
+    private static final String ALGORITHM = "AES/CBC/PKCS7Padding";
+
+    /// &lt;summary&gt;
+    /// 從 AES Key 中提取 IV (第 7~22 字元)
+    /// &lt;/summary&gt;
+    private static byte[] extractIvFromKey(byte[] key) {
+        // IV 從 key 的索引 6~21 (第 7~22 字元) 提取
+        byte[] iv = new byte[16];
+        int keyLength = Math.min(key.length, 22);
+        int start = 6;
+        for (int i = 0; i &lt; 16 &&amp; (start + i) &lt; keyLength; i++) {
+            iv[i] = key[start + i];
+        }
+        // 如果 key 長度不足 22，用 0 補足
+        for (int i = keyLength - start; i &lt; 16; i++) {
+            iv[i] = 0;
+        }
+        return iv;
+    }
+
+    /// &lt;summary&gt;
+    /// 確保 AES Key 至少有 32 bytes (256 bits)
+    /// &lt;/summary&gt;
+    private static byte[] ensureKeyLength(byte[] key) {
+        byte[] fullKey = new byte[32];
+        int copyLength = Math.min(key.length, 32);
+        System.arraycopy(key, 0, fullKey, 0, copyLength);
+        // 如果 key 長度不足 32，用 0 補足
+        return fullKey;
+    }
+
+    /// &lt;summary&gt;
+    /// 加密並構造 RequestData 結構
+    /// &lt;/summary&gt;
+    public static String encryptRequest(Object jsonData, byte[] key) throws Exception {
+        // 1. 將物件序列化為 JSON 字串 (minimize)
+        String jsonString = new Gson().toJson(jsonData); // 使用 minimize 設定
+
+        // 2. 準備 AES Key (32 bytes) 和從中提取 IV (16 bytes)
+        byte[] fullKey = ensureKeyLength(key);
+        byte[] iv = extractIvFromKey(key);
+
+        // 3. AES 256 加密
+        String encryptedString = encrypt(jsonString, fullKey, iv);
+
+        // 4. 構造外層請求
+        Map&lt;String, String&gt; outerRequest = new HashMap&lt;&gt;();
+        outerRequest.put("RequestData", encryptedString);
+        return new Gson().toJson(outerRequest);
+    }
+
+    /// &lt;summary&gt;
+    /// 從 ReturnData 結構中解密回應
+    /// &lt;/summary&gt;
+    public static &lt;T&gt; T deserializeResponse(String responseJson, Class&lt;T&gt; responseClass, byte[] key) throws Exception {
+        // 1. 解析外層回應
+        Type type = new TypeToken&lt;Map&lt;String, String&gt;&gt;(){}.getType();
+        Map&lt;String, String&gt; outerResponse = new Gson().fromJson(responseJson, type);
+
+        if (outerResponse == null || !outerResponse.containsKey("ReturnData")) {
+            throw new Exception("Invalid response format");
+        }
+
+        // 2. 準備 AES Key (32 bytes) 和從中提取 IV (16 bytes)
+        byte[] fullKey = ensureKeyLength(key);
+        byte[] iv = extractIvFromKey(key);
+
+        // 3. 解密 ReturnData
+        String decryptedString = decrypt(outerResponse.get("ReturnData"), fullKey, iv);
+
+        // 4. 反序列化為回應物件
+        return new Gson().fromJson(decryptedString, responseClass);
+    }
+
+    public static String encrypt(String plainText, byte[] key, byte[] iv) throws Exception {
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+        IvParameterSpec ivSpec = new IvParameterSpec(iv);
+        cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
+        byte[] encrypted = cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8));
+        return Base64.encodeToString(encrypted, Base64.NO_WRAP);
+    }
+
+    public static String decrypt(String cipherText, byte[] key, byte[] iv) throws Exception {
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+        IvParameterSpec ivSpec = new IvParameterSpec(iv);
+        cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
+        byte[] decoded = Base64.decode(cipherText, Base64.NO_WRAP);
+        byte[] decrypted = cipher.doFinal(decoded);
+        return new String(decrypted, StandardCharsets.UTF_8);
+    }
+
+    // 字串轉 byte[]
+    public static byte[] stringToBytes(String str) {
+        return str.getBytes(StandardCharsets.UTF_8);
+    }
+}</code></pre>
+
+        <h4>Kotlin 版本</h4>
+        <pre><code>import javax.crypto.Cipher
+import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.SecretKeySpec
+import java.util.Base64
+import java.nio.charset.StandardCharsets
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
+
+object AesUtil {
+    private const val ALGORITHM = "AES/CBC/PKCS7Padding"
+    private val gson: Gson = GsonBuilder().create()
+
+    /// &lt;summary&gt;
+    /// 從 AES Key 中提取 IV (第 7~22 字元)
+    /// &lt;/summary&gt;
+    private fun extractIvFromKey(key: ByteArray): ByteArray {
+        // IV 從 key 的索引 6~21 (第 7~22 字元) 提取
+        val iv = ByteArray(16)
+        val keyLength = minOf(key.size, 22)
+        val start = 6
+        for (i in 0 until 16 &amp;&amp; (start + i) &lt; keyLength) {
+            iv[i] = key[start + i]
+        }
+        // 如果 key 長度不足 22，用 0 補足
+        for (i in (keyLength - start) until 16) {
+            iv[i] = 0
+        }
+        return iv
+    }
+
+    /// &lt;summary&gt;
+    /// 確保 AES Key 至少有 32 bytes (256 bits)
+    /// &lt;/summary&gt;
+    private fun ensureKeyLength(key: ByteArray): ByteArray {
+        val fullKey = ByteArray(32)
+        val copyLength = minOf(key.size, 32)
+        System.arraycopy(key, 0, fullKey, 0, copyLength)
+        // 如果 key 長度不足 32，用 0 補足
+        return fullKey
+    }
+
+    /// &lt;summary&gt;
+    /// 加密並構造 RequestData 結構
+    /// &lt;/summary&gt;
+    fun encryptRequest(jsonData: Any, key: ByteArray): String {
+        // 1. 將物件序列化為 JSON 字串 (minimize)
+        val jsonString = gson.toJson(jsonData)
+
+        // 2. 準備 AES Key (32 bytes) 和從中提取 IV (16 bytes)
+        val fullKey = ensureKeyLength(key)
+        val iv = extractIvFromKey(key)
+
+        // 3. AES 256 加密
+        val encryptedString = encrypt(jsonString, fullKey, iv)
+
+        // 4. 構造外層請求
+        val outerRequest = mapOf("RequestData" to encryptedString)
+        return gson.toJson(outerRequest)
+    }
+
+    /// &lt;summary&gt;
+    /// 從 ReturnData 結構中解密回應
+    /// &lt;/summary&gt;
+    inline fun &lt;reified T&gt; deserializeResponse(responseJson: String, key: ByteArray): T {
+        // 1. 解析外層回應
+        val type = object : TypeToken&lt;Map&lt;String, String&gt;&gt;() {}.type
+        val outerResponse: Map&lt;String, String&gt; = gson.fromJson(responseJson, type)
+
+        if (!outerResponse.containsKey("ReturnData")) {
+            throw Exception("Invalid response format")
+        }
+
+        // 2. 準備 AES Key (32 bytes) 和從中提取 IV (16 bytes)
+        val fullKey = ensureKeyLength(key)
+        val iv = extractIvFromKey(key)
+
+        // 3. 解密 ReturnData
+        val decryptedString = decrypt(outerResponse["ReturnData"]!!, fullKey, iv)
+
+        // 4. 反序列化為回應物件
+        return gson.fromJson(decryptedString, T::class.java)
+    }
+
+    fun encrypt(plainText: String, key: ByteArray, iv: ByteArray): String {
+        val cipher = Cipher.getInstance(ALGORITHM)
+        val keySpec = SecretKeySpec(key, "AES")
+        val ivSpec = IvParameterSpec(iv)
+        cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec)
+        val encrypted = cipher.doFinal(plainText.toByteArray(StandardCharsets.UTF_8))
+        return Base64.encodeToString(encrypted, Base64.NO_WRAP)
+    }
+
+    fun decrypt(cipherText: String, key: ByteArray, iv: ByteArray): String {
+        val cipher = Cipher.getInstance(ALGORITHM)
+        val keySpec = SecretKeySpec(key, "AES")
+        val ivSpec = IvParameterSpec(iv)
+        cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec)
+        val decoded = Base64.decode(cipherText, Base64.NO_WRAP)
+        val decrypted = cipher.doFinal(decoded)
+        return String(decrypted, StandardCharsets.UTF_8)
+    }
+
+    // 字串轉 byte[]
+    fun stringToBytes(str: String): ByteArray {
+        return str.toByteArray(StandardCharsets.UTF_8)
+    }
+}</code></pre>
+
+        <h2 id="注意事項">注意事項</h2>
+        <ol>
+            <li><strong>金鑰管理</strong>
+                <ul>
+                    <li>AES Key 應妥善保管，不應硬編碼在程式碼中</li>
+                    <li>建議使用安全的儲存機制(如 Android 的 Keystore、.NET 的 DPAPI)</li>
+                    <li>金鑰應定期更新</li>
+                    <li>IV 不需要單獨管理，會從 AES Key 中自動提取</li>
+                </ul>
+            </li>
+            <li><strong>加密時機</strong>
+                <ul>
+                    <li>請求加密:將整個 JSON 請求體加密後放置於 <code class="code-inline">RequestData</code> 欄位中</li>
+                    <li>回應解密: 從 <code class="code-inline">ReturnData</code> 欄位提取並解密內容</li>
+                    <li>AES Key 的前 32 字元作為加密金鑰，第 7~22 字元作為初始化向量</li>
+                </ul>
+            </li>
+            <li><strong>JSON Minimize</strong>
+                <ul>
+                    <li>加密前的 JSON 應進行 minimize（移除多餘空白）處理</li>
+                    <li>可使用 <code class="code-inline">JsonSerializerOptions.WriteIndented = false</code> (C#) 或 Gson 預設最小化 (Java/Kotlin)</li>
+                </ul>
+            </li>
+            <li><strong>錯誤處理</strong>
+                <ul>
+                    <li>解密失敗可能表示:
+                        <ul>
+                            <li>AES Key 錯誤</li>
+                            <li>資料被篡改</li>
+                            <li>格式錯誤</li>
+                        </ul>
+                    </li>
+                    <li>應適當處理加密/解密異常</li>
+                </ul>
+            </li>
+            <li><strong>安全性</strong>
+                <ul>
+                    <li>使用 HTTPS 傳輸加密後的資料</li>
+                    <li>AES Key 長度至少需要 22 個字元 (bytes)，建議使用 32 個字元以上</li>
+                    <li>IV 將從 AES Key 中提取，不可自行更改</li>
+                </ul>
+            </li>
+            <li><strong>統一結構</strong>
+                <ul>
+                    <li>所有 API 接口（除登入接口外）必須使用 <code class="code-inline">RequestData</code>/<code class="code-inline">ReturnData</code> 結構</li>
+                    <li>登入接口同樣使用此結構進行加解密</li>
+                </ul>
+            </li>
+        </ol>
+
+        <h2 id="未提供資訊">未提供資訊</h2>
+        <div class="note">
+            <div class="note-title">待提供資訊</div>
+            <p>目前加密流程中的具體數值尚未提供:</p>
+            <ul>
+                <li><strong>AES Key</strong>: 待系統提供 (至少 22 bytes 的字串，建議 32 bytes 以上)</li>
+            </ul>
+            <p>實作時請使用動態配置或從安全儲存中讀取 AES Key。IV 會自動從 AES Key 的第 7~22 字元提取。</p>
+        </div>
+    </div>
+</body>
+</html>
