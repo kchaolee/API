@@ -64,7 +64,7 @@ public class AuthenticationController : ControllerBase
                 PropertyNameCaseInsensitive = true
             });
 
-            if (loginRequest == null || string.IsNullOrEmpty(loginRequest.RequestId))
+            if (loginRequest == null || string.IsNullOrEmpty(loginRequest.requestId))
             {
                 return BadRequest(ApiResponse<object>.Fail("", "請求格式錯誤", "F981", "requestId 為失"));
             }
@@ -73,9 +73,9 @@ public class AuthenticationController : ControllerBase
             if (!(loginRequest.Account == "user001" &&  loginRequest.Password == "password123"))
             {
                 return BadRequest(ApiResponse<object>.Fail(
-                    loginRequest.RequestId,
+                    loginRequest.requestId,
                     "失敗-驗證失敗",
-                    new List<ErrorDetail> { new ErrorDetail { Code = "F119", Message = "驗證失敗" } }
+                    new List<ErrorDetail> { new ErrorDetail { code = "F119",message = "驗證失敗" } }
                 ));
             }
 
@@ -83,9 +83,9 @@ public class AuthenticationController : ControllerBase
             //if (!_authService.ValidateToken(loginRequest.Account, loginRequest.Password))
             //{
             //    return BadRequest(ApiResponse<object>.Fail(
-            //        loginRequest.RequestId,
+            //        loginRequest.requestId,
             //        "失敗-驗證失敗",
-            //        new List<ErrorDetail> { new ErrorDetail { Code = "F119", Message = "驗證失敗" } }
+            //        new List<ErrorDetail> { new ErrorDetail { code = "F119", message = "驗證失敗" } }
             //    ));
             //}
 
@@ -100,7 +100,7 @@ public class AuthenticationController : ControllerBase
             };
 
             return Ok(ApiResponse<LoginResponseData>.Success(
-                loginRequest.RequestId,
+                loginRequest.requestId,
                 "登入成功",
                 responseData
             ));

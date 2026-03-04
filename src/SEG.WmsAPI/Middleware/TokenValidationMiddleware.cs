@@ -1,5 +1,12 @@
-using System.Text.Json;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using SEG.WmsAPI.Models.Common;
+using SEG.WmsAPI.Models.Requests;
+using SEG.WmsAPI.Services;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Unicode;
 
 namespace SEG.WmsAPI.Middleware;
 
@@ -64,6 +71,9 @@ public class TokenValidationMiddleware
     /// </summary>
     private static async Task ReturnUnauthorized(HttpContext context, string errorMessage)
     {
+        var aesService = new Services.AesService(context.RequestServices.GetRequiredService<IConfiguration>());
+        var originalBodyStream = context.Response.Body;
+
         context.Response.StatusCode = 401;
         context.Response.ContentType = "application/json";
 
@@ -75,12 +85,31 @@ public class TokenValidationMiddleware
             errorMessage
         );
 
-        var responseJson = JsonSerializer.Serialize(errorResponse, new JsonSerializerOptions
+        // 加密原始回應
+        var errorResponseString = JsonSerializer.Serialize(errorResponse, new JsonSerializerOptions
         {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
+            WriteIndented = false
+        });
+        var encryptedData = aesService.Encrypt(errorResponseString);
+
+        // 包裝在 ReturnData 結構中
+        var encryptedResponse = new EncryptedResponse
+        {
+            ReturnData = encryptedData
+        };
+
+        var responseJson = JsonSerializer.Serialize(encryptedResponse, new JsonSerializerOptions
+        {
+            Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
             WriteIndented = false
         });
 
+        context.Response.ContentLength = Encoding.UTF8.GetByteCount(responseJson);
+        context.Response.Body = originalBodyStream;
+        context.Response.ContentType = "application/json";
         await context.Response.WriteAsync(responseJson);
+         
+        return;
     }
 }

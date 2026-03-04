@@ -1,6 +1,8 @@
-using System.Text;
-using System.Text.Json;
 using SEG.WmsAPI.Models.Requests;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Unicode;
 
 namespace SEG.WmsAPI.Middleware;
 
@@ -52,7 +54,7 @@ public class EncryptionMiddleware
             var originalResponse = await new StreamReader(memoryStream).ReadToEndAsync();
 
             // 只有成功的回應（狀態碼 2xx）才需要加密
-            if (context.Response.StatusCode >= 200 && context.Response.StatusCode < 300)
+            if (context.Response.StatusCode >= 200 && context.Response.StatusCode <= 500)
             {
                 try
                 {
@@ -67,7 +69,8 @@ public class EncryptionMiddleware
 
                     var responseJson = JsonSerializer.Serialize(encryptedResponse, new JsonSerializerOptions
                     {
-                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
+                        WriteIndented = false
                     });
 
                     context.Response.ContentLength = Encoding.UTF8.GetByteCount(responseJson);

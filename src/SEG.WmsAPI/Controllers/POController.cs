@@ -84,7 +84,7 @@ public class POController : ControllerBase
                 }
             };
 
-            return Ok(ApiResponse<R1ResponseData>.Success(request.RequestId, $"成功，共{data.HeaderList.Count}筆資料", data));
+            return Ok(ApiResponse<R1ResponseData>.Success(request.requestId, $"成功，共{data.HeaderList.Count}筆資料", data));
         }
         catch (Exception ex)
         {
@@ -156,7 +156,7 @@ public class POController : ControllerBase
                 }
             };
 
-            return Ok(ApiResponse<R2ResponseData>.Success(request.RequestId, "成功", data));
+            return Ok(ApiResponse<R2ResponseData>.Success(request.requestId, "成功", data));
         }
         catch (Exception ex)
         {
@@ -193,7 +193,7 @@ public class POController : ControllerBase
 
             if (!int.TryParse(request.PackQty, out int packQty))
             {
-                return BadRequest(ApiResponse<object>.Fail(request.RequestId, "失敗-資料的格式錯誤", "F981", "件數必須為整數"));
+                return BadRequest(ApiResponse<object>.Fail(request.requestId, "失敗-資料的格式錯誤", "F981", "件數必須為整數"));
             }
 
             var data = new R3ResponseData
@@ -235,7 +235,7 @@ public class POController : ControllerBase
                 }
             };
 
-            return Ok(ApiResponse<R3ResponseData>.Success(request.RequestId, "成功", data));
+            return Ok(ApiResponse<R3ResponseData>.Success(request.requestId, "成功", data));
         }
         catch (Exception ex)
         {
@@ -307,7 +307,7 @@ public class POController : ControllerBase
                 }
             };
 
-            return Ok(ApiResponse<R4ResponseData>.Success(request.RequestId, "成功", data));
+            return Ok(ApiResponse<R4ResponseData>.Success(request.requestId, "成功", data));
         }
         catch (Exception ex)
         {
@@ -344,7 +344,7 @@ public class POController : ControllerBase
 
             if (!int.TryParse(request.RecPalletQty, out int palletQty))
             {
-                return BadRequest(ApiResponse<object>.Fail(request.RequestId, "失敗-資料的格式錯誤", "F981", "板數必須為整數"));
+                return BadRequest(ApiResponse<object>.Fail(request.requestId, "失敗-資料的格式錯誤", "F981", "板數必須為整數"));
             }
 
             var data = new R5ResponseData
@@ -376,7 +376,7 @@ public class POController : ControllerBase
                 }
             };
 
-            return Ok(ApiResponse<R5ResponseData>.Success(request.RequestId, "收貨確認成功", data));
+            return Ok(ApiResponse<R5ResponseData>.Success(request.requestId, "收貨確認成功", data));
         }
         catch (Exception ex)
         {

@@ -6,11 +6,11 @@ namespace SEG.WmsAPI.Models.Common;
 /// <typeparam name="T">回應資料的類型</typeparam>
 public class ApiResponse<T>
 {
-    public string RequestId { get; set; } = string.Empty;
-    public string Status { get; set; } = string.Empty;  // S:成功, L:請重新登入, F:失敗, U:伺服器儲存失敗
-    public string Message { get; set; } = string.Empty;
-    public T? Data { get; set; }
-    public List<ErrorDetail>? Errors { get; set; }
+    public string requestId { get; set; } = string.Empty;
+    public string status { get; set; } = string.Empty;  // S:成功, L:請重新登入, F:失敗, U:伺服器儲存失敗
+    public string message { get; set; } = string.Empty;
+    public T? data { get; set; }
+    public List<ErrorDetail>? errors { get; set; }
 
     /// <summary>
     /// 建立成功的回應
@@ -19,11 +19,11 @@ public class ApiResponse<T>
     {
         return new ApiResponse<T>
         {
-            RequestId = requestId,
-            Status = "S",
-            Message = message,
-            Data = data,
-            Errors = null
+            requestId = requestId,
+            status = "S",
+            message = message,
+            data = data,
+            errors = null
         };
     }
 
@@ -34,11 +34,11 @@ public class ApiResponse<T>
     {
         return new ApiResponse<T>
         {
-            RequestId = requestId,
-            Status = "F",
-            Message = message,
-            Data = default,
-            Errors = errors ?? new List<ErrorDetail>()
+            requestId = requestId,
+            status = "F",
+            message = message,
+            data = default,
+            errors = errors ?? new List<ErrorDetail>()
         };
     }
 
@@ -49,11 +49,11 @@ public class ApiResponse<T>
     {
         return new ApiResponse<T>
         {
-            RequestId = requestId,
-            Status = "F",
-            Message = message,
-            Data = default,
-            Errors = new List<ErrorDetail> { new ErrorDetail { Code = errorCode, Message = errorMessage } }
+            requestId = requestId,
+            status = "F",
+            message = message,
+            data = default,
+            errors = new List<ErrorDetail> { new ErrorDetail { code = errorCode, message = errorMessage } }
         };
     }
 }
@@ -63,8 +63,8 @@ public class ApiResponse<T>
 /// </summary>
 public class ErrorDetail
 {
-    public string Code { get; set; } = string.Empty;
-    public string Message { get; set; } = string.Empty;
+    public string code { get; set; } = string.Empty;
+    public string message { get; set; } = string.Empty;
 }
 
 /// <summary>
@@ -72,5 +72,5 @@ public class ErrorDetail
 /// </summary>
 public class RequestBase
 {
-    public string RequestId { get; set; } = string.Empty;
+    public string requestId { get; set; } = string.Empty;
 }
