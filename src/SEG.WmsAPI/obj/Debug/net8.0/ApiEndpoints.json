@@ -1,0 +1,151 @@
+[
+  {
+    "ContainingType": "SEG.WmsAPI.Controllers.EncryptionController",
+    "Method": "Decrypt",
+    "RelativePath": "api/Encryption/decrypt",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "SEG.WmsAPI.Controllers.EncryptionRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEG.WmsAPI.Controllers.EncryptionController",
+    "Method": "Encrypt",
+    "RelativePath": "api/Encryption/encrypt",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "SEG.WmsAPI.Controllers.EncryptionRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEG.WmsAPI.Controllers.WeatherForecastController",
+    "Method": "Get",
+    "RelativePath": "WeatherForecast",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[SEG.WmsAPI.WeatherForecast, SEG.WmsAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "EndpointName": "GetWeatherForecast"
+  },
+  {
+    "ContainingType": "SEG.WmsAPI.Controllers.AuthenticationController",
+    "Method": "SignInVerification",
+    "RelativePath": "wmService/v1/Auth/SignInVerification",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "jsonElement",
+        "Type": "System.Text.Json.JsonElement",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEG.WmsAPI.Controllers.POController",
+    "Method": "PoCfmReceipt",
+    "RelativePath": "wmService/v1/PO/PoCfmReceipt",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "jsonElement",
+        "Type": "System.Text.Json.JsonElement",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEG.WmsAPI.Controllers.POController",
+    "Method": "PoDetailData",
+    "RelativePath": "wmService/v1/PO/PoDetailData",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "jsonElement",
+        "Type": "System.Text.Json.JsonElement",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEG.WmsAPI.Controllers.POController",
+    "Method": "PoHeaderData",
+    "RelativePath": "wmService/v1/PO/PoHeaderData",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "jsonElement",
+        "Type": "System.Text.Json.JsonElement",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEG.WmsAPI.Controllers.POController",
+    "Method": "PoReceivingItem",
+    "RelativePath": "wmService/v1/PO/PoReceivingItem",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "jsonElement",
+        "Type": "System.Text.Json.JsonElement",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEG.WmsAPI.Controllers.POController",
+    "Method": "PoVerifying",
+    "RelativePath": "wmService/v1/PO/PoVerifying",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "jsonElement",
+        "Type": "System.Text.Json.JsonElement",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

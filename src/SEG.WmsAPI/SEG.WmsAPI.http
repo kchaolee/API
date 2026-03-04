@@ -1,0 +1,6 @@
+@SEG.WmsAPI_HostAddress = http://localhost:5062
+
+GET {{SEG.WmsAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

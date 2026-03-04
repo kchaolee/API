@@ -1,0 +1,17 @@
+D:\RandyData\HO\Daniel\20251210_EDI\9.SEG.AIGen\API\src\AesHelperGUI\obj\Debug\net8.0-windows\AesHelperGUI.csproj.GenerateResource.cache
+D:\RandyData\HO\Daniel\20251210_EDI\9.SEG.AIGen\API\src\AesHelperGUI\obj\Debug\net8.0-windows\AesHelperGUI.GeneratedMSBuildEditorConfig.editorconfig
+D:\RandyData\HO\Daniel\20251210_EDI\9.SEG.AIGen\API\src\AesHelperGUI\obj\Debug\net8.0-windows\AesHelperGUI.AssemblyInfoInputs.cache
+D:\RandyData\HO\Daniel\20251210_EDI\9.SEG.AIGen\API\src\AesHelperGUI\obj\Debug\net8.0-windows\AesHelperGUI.AssemblyInfo.cs
+D:\RandyData\HO\Daniel\20251210_EDI\9.SEG.AIGen\API\src\AesHelperGUI\obj\Debug\net8.0-windows\AesHelperGUI.csproj.CoreCompileInputs.cache
+D:\RandyData\HO\Daniel\20251210_EDI\9.SEG.AIGen\API\src\AesHelperGUI\obj\Debug\net8.0-windows\AesHelperGUI.sourcelink.json
+D:\RandyData\HO\Daniel\20251210_EDI\9.SEG.AIGen\API\src\AesHelperGUI\obj\Debug\net8.0-windows\AesHelperGUI.FormAes.resources
+D:\RandyData\HO\Daniel\20251210_EDI\9.SEG.AIGen\API\src\AesHelperGUI\bin\Debug\net8.0-windows\AesHelperGUI.exe
+D:\RandyData\HO\Daniel\20251210_EDI\9.SEG.AIGen\API\src\AesHelperGUI\bin\Debug\net8.0-windows\AesHelperGUI.deps.json
+D:\RandyData\HO\Daniel\20251210_EDI\9.SEG.AIGen\API\src\AesHelperGUI\bin\Debug\net8.0-windows\AesHelperGUI.runtimeconfig.json
+D:\RandyData\HO\Daniel\20251210_EDI\9.SEG.AIGen\API\src\AesHelperGUI\bin\Debug\net8.0-windows\AesHelperGUI.dll
+D:\RandyData\HO\Daniel\20251210_EDI\9.SEG.AIGen\API\src\AesHelperGUI\bin\Debug\net8.0-windows\AesHelperGUI.pdb
+D:\RandyData\HO\Daniel\20251210_EDI\9.SEG.AIGen\API\src\AesHelperGUI\obj\Debug\net8.0-windows\AesHelperGUI.dll
+D:\RandyData\HO\Daniel\20251210_EDI\9.SEG.AIGen\API\src\AesHelperGUI\obj\Debug\net8.0-windows\refint\AesHelperGUI.dll
+D:\RandyData\HO\Daniel\20251210_EDI\9.SEG.AIGen\API\src\AesHelperGUI\obj\Debug\net8.0-windows\AesHelperGUI.pdb
+D:\RandyData\HO\Daniel\20251210_EDI\9.SEG.AIGen\API\src\AesHelperGUI\obj\Debug\net8.0-windows\AesHelperGUI.genruntimeconfig.cache
+D:\RandyData\HO\Daniel\20251210_EDI\9.SEG.AIGen\API\src\AesHelperGUI\obj\Debug\net8.0-windows\ref\AesHelperGUI.dll

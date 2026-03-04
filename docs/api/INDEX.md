@@ -55,9 +55,9 @@ docs/api/
 
 | 規範 | 說明 |
 |------|------|
-| **基礎 URL** | `http://192.168.x.x/wmService/v1` |
-| **請求格式** | JSON |
-| **回應格式** | JSON |
+| **基礎 URL** | `http://Host IP:HostPort/wmService/v1` |
+| **請求格式** | JSON (請求數據需經 AES 256 加密後置於 RequestData) |
+| **回應格式** | JSON (回應數據需從 ReturnData 中提取並解密) |
 | **認證方式** | Bearer Token (Authorization Header) |
 | **Request ID** | 每個請求需傳遞唯一的 GUID |
 

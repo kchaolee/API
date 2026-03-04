@@ -22,15 +22,73 @@
 
 | 項目 | 說明 |
 |------|------|
-| 基礎 URL | `http://192.168.x.x/wmService/v1` |
-| 通訊協定 | HTTPS (生產環境) / HTTP (測試環境) |
+| 基礎 URL | `http://Host IP:HostPort/wmService/v1` |
+| 通訊協定 | HTTP/HTTPS |
 | 請求格式 | JSON (需 AES 256 加密) |
 | 回應格式 | JSON (需 AES 256 加密) |
 | 字符編碼 | UTF-8 |
 
+### API 請求與回應結構
+
+**請求結構**（外層）：
+```json
+{
+  "RequestData": "AES256加密後的數據 (AES Key (IV 從 AES Key 的第 7~22 字元提取))"
+}
+```
+
+**回應結構**（外層）：
+```json
+{
+  "ReturnData": "AES256加密後的數據 (AES Key (IV 從 AES Key 的第 7~22 字元提取))"
+}
+```
+
+**重要說明**：
+- 所有 API 請求（除登入接口外）的數據需先 JSON 序列化後，經過 AES 256 加密，再放置於 `RequestData` 欄位中
+- 所有 API 回應的數據經過 AES 256 加密後，放置於 `ReturnData` 欄位中
+- AES Key 需由系統另行提供 (IV 從 AES Key 的第 7~22 字元提取)
+
+**登入接口請求範例**：
+```json
+{
+  "RequestData": "8uhB22wljs/Zqm4jfDrcVKIHQc0cBwjkgrPv3C4xM+hFXfz2X5r8TmdvpAsz1XaQRrXbXTPO0Lxexum4D2wu/tsZ14kQScSb5FH04DmgFxCDVPjSzchbrSeB3GYZYLyXkdEsTfhsvC3xs/Ar1wc1kQ=="
+}
+```
+
+**登入接口回應範例**：
+```json
+{
+  "ReturnData": "8uhB22wljs/Zqm4jfDrcVKIHQc0cBwjkgrPv3C4xM+hFXfz2X5r8TmdvpAsz1XaQ6vkKfExbdQWnDp71pmdQYY7tu8Q2Fmdj2j96eezi3wkjxpztdLmk0jYfCsrQSLxA9EOeXrlOtqklHqE1sClRiZ/Kuj8BhzJgD05X3HczT/zo4rAn8jZpdcP2L7Mqwt6VjcnvELLOKOIKymQyPgPa/irAo2FBV1Pwz4fz8oBMeGjYCXNZ7zOPw49tRnjGGtkVM3Ps6ef2Cqy+NMo5GPKOig=="
+}
+```
+
+**實際請求數據（加密前）**：
+```json
+{
+  "requestId": "fb1a6bb8-21cd-490e-9f47-962cf99ec089",
+  "account": "user001",
+  "password": "password123"
+}
+```
+
+**實際回應數據（解密後）**：
+```json
+{
+  "requestId": "fb1a6bb8-21cd-490e-9f47-962cf99ec089",
+  "status": "S",
+  "message": "登入成功",
+  "data": {
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "expires": "2024-12-11 23:59:59"
+  },
+  "errors": null
+}
+```
+
 ### 全域回應格式標準
 
-所有 API 統一使用 JSON 格式回應：
+所有 API 統一使用 JSON 格式回應（解密後）：
 
 **成功回應**:
 ```json
@@ -59,15 +117,21 @@
 }
 ```
 
+**Status 代碼說明**：
+| Status | 說明 |
+|--------|------|
+| S | 處理完成 |
+| L | 請重新登入 |
+| F | 處理失敗 |
+| U | 伺服器儲存失敗、物件存取錯誤時不會回應錯誤 |
+
 ### HTTP 狀態碼
 
 | HTTP 狀態碼 | 說明 | API Status |
 |------------|------|------------|
 | 200 | 請求成功 | S / F (依據 status 欄位) |
-| 400 | 請求格式錯誤 | F |
-| 401 | 認證失效 | F |
-| 404 | 資料不存在 | F |
-| 500 | 伺服器內部錯誤 | F |
+| 500 | 伺服器儲存失敗、物件存取錯誤時不會回應錯誤 | U |
+| 200以外 | 有錯誤、回傳errors | F |
 
 ### 錯誤代碼體系
 
@@ -91,8 +155,8 @@ API 的請求與回應內容均需經過 AES 256 加密處理。
 | 加密演算法 | AES 256 |
 | 加密模式 | CBC (Cipher Block Chaining) |
 | 填充方式 | PKCS7 |
-| 金鑰 (AES Key) | 後續提供 (32 bytes) |
-| 初始化向量 (IV) | 後續提供 (16 bytes) |
+| 金鑰 (AES Key) | 後續提供 (至少 22 bytes) |
+| 初始化向量 (IV) | 從 AES Key 的第 7~22 字元提取 (16 字元) |
 
 **加密流程**:
 1. 請求加密: 原始 JSON → AES 256 加密 → Base64 編碼 → 傳送至 API
@@ -160,12 +224,12 @@ Token 透過 **A1 登入驗證** 接口取得，有效期建議為 24 小時。
 
 | 代號 | 接口名稱 | URL | 說明 |
 |------|---------|-----|------|
-| A1 | 登入驗證 | POST /Login | 取得授權 Token |
-| R1 | 取得預期收貨清單 | POST /PO/PoHeaderData | 取得未完成收貨的採購單清單 |
-| R2 | 取得收貨明細資料 | POST /PO/PoDetailData | 依採購單取得收貨明細 |
-| R3 | 回傳收貨資料 | POST /PO/PoReceivingItem | 新增/更新收貨資料 |
-| R4 | 取得收貨核對明細 | POST /PO/PoVerifying | 取得收貨核對資料與儲位選單 |
-| R5 | 回傳全收確認 | POST /PO/PoCfmReceipt | 確認過帳並產生板標籤 |
+| A1 | 登入驗證 | POST `/wmService/v1/Auth/SignInVerification` | 取得授權 Token |
+| R1 | 取得預期收貨清單 | POST `/wmService/v1/PO/PoHeaderData` | 取得未完成收貨的採購單清單 |
+| R2 | 取得收貨明細資料 | POST `/wmService/v1/PO/PoDetailData` | 依採購單取得收貨明細 |
+| R3 | 回傳收貨資料 | POST `/wmService/v1/PO/PoReceivingItem` | 新增/更新收貨資料 |
+| R4 | 取得收貨核對明細 | POST `/wmService/v1/PO/PoVerifying` | 取得收貨核對資料與儲位選單 |
+| R5 | 回傳全收確認 | POST `/wmService/v1/PO/PoCfmReceipt` | 確認過帳並產生板標籤 |
 
 ### 出貨作業 (Shipping)
 

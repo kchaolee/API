@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AES 加密/解密工具 - WMS API</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1em;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #f9f9f9f;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            min-height: 200px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        .operation-options {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 15px 25px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .radio-option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .radio-option.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .radio-option input[type="radio"] {
+            margin: 0;
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-execute {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-execute:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-clear {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-clear:hover {
+            background: #5a6268;
+        }
+
+        .btn-copy {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-copy:hover {
+            background: #218838;
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .info-box {
+            background: #e8f4f8;
+            border-left: 4px solid #008080;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .info-box strong {
+            color: #006666;
+        }
+
+        .output-section {
+            min-height: 300px;
+        }
+
+        .output-text {
+            background: #ffffff;
+            border: 2px solid #28a745;
+        }
+
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .success {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .status-message {
+            display: none;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid;
+            border-radius: 4px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .char-index {
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        .step-explanation {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .step-explanation ul {
+            margin: 5px 0 0 20px;
+            padding-left: 20px;
+        }
+
+        .step-explanation li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 AES 加密/解密工具</h1>
+        <p class="subtitle">WMS API v1.01 - 線上加密/解密測試工具</p>
+
+        <!-- AES Key 輸入區 -->
+        <div class="section">
+            <h2>1. AES Key 設定 (IV 值由 AES Key 提取)</h2>
+            <input type="text"
+                   id="aesKey"
+                   placeholder="輸入 AES Key（例如：ThisIsASecretKeyForSEGWmsAPITestOnly@DoNotUseItInPRODEnv!）"
+                   value="ThisIsASecretKeyForSEGWmsAPITestOnly@DoNotUseItInPRODEnv!">
+            <div class="info-box">
+                <strong>💡 提示：</strong>
+                • 加密演算法：AES 256 CBC 模式，PKCS7 填充
+            </div>
+        </div>
+
+        <!-- JSON 字串輸入區 -->
+        <div class="section">
+            <h2>2. JSON 字串</h2>
+            <label for="jsonInput">
+                要處理的 JSON 字串
+            </label>
+            <textarea id="jsonInput"
+                      placeholder='輸入要加密或解密的 JSON 字串...&#10;範例（加密）：&#10;{"requestId":"fb1a6bb8-21cd-490e-9f47-962cf99ec089","account":"user001","password":"password123"}&#10;&#10;範例（解密）：{"RequestData":"8uhB22wljs/Zqm4jfDrcVKIH..."}'>{
+    "requestId": "fb1a6bb8-21cd-490e-9f47-962cf99ec089",
+    "account": "user001",
+    "password": "password123"
+}</textarea>
+            <div class="step-explanation">
+                <strong>📋 加密步驟：</strong>
+                <ul>
+                    <li>Minimize JSON（移除多餘空白）</li>
+                    <li>提取 AES Key 的前 32 byte 作為金鑰</li>
+                    <li>AES 256 加密（CBC 模式，PKCS7 填充）</li>
+                    <li>轉換為 Base64 並包裝為 {"RequestData": "..."}</li>
+                </ul>
+                <strong>🔓 解密步驟：</strong>
+                <ul>
+                    <li>從 RequestData/ReturnData 提取 Base64 加密資料</li>
+                    <li>提取 AES Key 的前 32 byte 作為金鑰</li>
+                    <li>AES 256 解密（CBC 模式，PKCS7 填充）</li>
+                    <li>返回原始 JSON 字串</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 操作選擇區 -->
+        <div class="section">
+            <h2>3. 選擇操作</h2>
+            <div class="operation-options">
+                <div class="radio-option selected" id="encryptOption" onclick="selectOperation('encrypt')">
+                    <input type="radio" name="operation" value="encrypt" checked>
+                    <span>🔒 加密 Encrypt</span>
+                </div>
+                <div class="radio-option" id="decryptOption" onclick="selectOperation('decrypt')">
+                    <input type="radio" name="operation" value="decrypt">
+                    <span>🔓 解密 Decrypt</span>
+                </div>
+            </div>
+
+            <!-- 操作按鈕 -->
+            <div class="buttons">
+                <button class="btn-execute" onclick="executeOperation()">⚡ 執行 Execute</button>
+                <button class="btn-clear" onclick="clearAll()">🗑️ 清除 Clear</button>
+                <button class="btn-copy" onclick="copyResult()">📋 複製 Copy</button>
+            </div>
+        </div>
+
+        <!-- 狀態訊息 -->
+        <div id="statusMessage" class="status-message"></div>
+
+        <!-- 載出結果區 -->
+        <div class="section output-section">
+            <h2>4. 輸出結果</h2>
+            <label for="jsonOutput">
+                加密或解密結果
+            </label>
+            <!-- 載入框設為只讀，用於顯示結果 -->
+            <textarea id="jsonOutput"
+                      placeholder="加密或解密結果將顯示在這裡..."
+                      readonly
+                      class="output-text"></textarea>
+
+            <!-- Loading -->
+            <div id="loader" class="loader">
+                <div class="spinner"></div>
+                <p>處理中...</p>
+            </div>
+        </div>
+
+        <!-- 使用說明 -->
+        <div class="section">
+            <h2>📖 使用說明</h2>
+            <div class="info-box">
+                <strong>🔒 加密模式：</strong>
+                <ol>
+                    <li>輸入 AES Key</li>
+                    <li>輸入要加密的 JSON 字串</li>
+                    <li>選擇「加密 Encrypt」</li>
+                    <li>點擊「執行 Execute」按鈕</li>
+                    <li>輸出結果會自動包裝為 <code>{"RequestData": "..."}</code> 格式</li>
+                    <li>點擊「複製 Copy」可複製結果到剪貼簿</li>
+                </ol>
+                <br>
+                <strong>🔓 解密模式：</strong>
+                <ol>
+                    <li>輸入 AES Key（必須與加密時相同）</li>
+                    <li>輸入要解密的資料（可以帶 RequestData/ReturnData 包裝或純 Base64）</li>
+                    <li>選擇「解密 Decrypt」</li>
+                    <li>點擊「執行 Execute」按鈕</li>
+                    <li>輸出結果為原始 JSON 字串</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 選擇操作模式
+        function selectOperation(operation) {
+            const encryptOption = document.getElementById('encryptOption');
+            const decryptOption = document.getElementById('decryptOption');
+            const encryptRadio = document.querySelector('#encryptOption input[type="radio"]');
+            const decryptRadio = document.querySelector('#decryptOption input[type="radio"]');
+
+            if (operation === 'encrypt') {
+                encryptOption.classList.add('selected');
+                decryptOption.classList.remove('selected');
+                encryptRadio.checked = true;
+            } else {
+                decryptOption.classList.add('selected');
+                encryptOption.classList.remove('selected');
+                decryptRadio.checked = true;
+            }
+        }
+
+        // 執行加密或解密
+        async function executeOperation() {
+            const aesKey = document.getElementById('aesKey').value.trim();
+            const jsonInput = document.getElementById('jsonInput').value.trim();
+            const isEncrypt = document.querySelector('input[name="operation"]:checked').value === 'encrypt';
+            const jsonOutput = document.getElementById('jsonOutput');
+            const loader = document.getElementById('loader');
+            const statusMessage = document.getElementById('statusMessage');
+
+            // 驗證輸入
+            if (!aesKey) {
+                showStatus('請輸入 AES Key！', 'error');
+                return;
+            }
+
+            if (aesKey.length < 22) {
+                showStatus('AES Key 長度至少需要 22 字元！', 'error');
+                return;
+            }
+
+            if (!jsonInput) {
+                showStatus('請輸入要處理的 JSON 字串！', 'error');
+                return;
+            }
+
+            // 顯示 loading
+            loader.style.display = 'block';
+            jsonOutput.disabled = true;
+            jsonOutput.value = '';
+            hideStatus();
+
+            try {
+                const endpoint = isEncrypt ? '/api/Encryption/encrypt' : '/api/Encryption/decrypt';
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        aesKey: aesKey,
+                        text: jsonInput
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    jsonOutput.value = result.data;
+                    showStatus(isEncrypt ? '✅ 加密成功！' : '✅ 解密成功！', 'success');
+                } else {
+                    throw new Error(result.message || '操作失敗');
+                }
+            } catch (error) {
+                console.error('操作失敗:', error);
+                showStatus(`❌ 操作失敗：${error.message}`, 'error');
+            } finally {
+                loader.style.display = 'none';
+                jsonOutput.disabled = false;
+            }
+        }
+
+        // 清除所有內容
+        function clearAll() {
+            if (confirm('確定要清除所有內容嗎？')) {
+                document.getElementById('jsonInput').value = '';
+                document.getElementById('jsonOutput').value = '';
+                hideStatus();
+            }
+        }
+
+        // 複製結果到剪貼簿
+        async function copyResult() {
+            const jsonOutput = document.getElementById('jsonOutput');
+            const result = jsonOutput.value.trim();
+
+            if (!result) {
+                showStatus('沒有可複製的結果！', 'error');
+                return;
+            }
+
+            try {
+                await navigator.clipboard.writeText(result);
+                showStatus('📋 結果已複製到剪貼簿！', 'success');
+                
+                // 3秒後隱藏訊息
+                setTimeout(hideStatus, 3000);
+            } catch (error) {
+                console.error('複製失敗:', error);
+                showStatus('❌ 複製失敗，請手動複製', 'error');
+            }
+        }
+
+        // 顯示狀態訊息
+        function showStatus(message, type) {
+            const statusElement = document.getElementById('statusMessage');
+            statusElement.textContent = message;
+            statusElement.style.display = 'block';
+
+            // 移除所有狀態類別
+            statusElement.classList.remove('error', 'success');
+
+            // 添加指定的狀態類別
+            statusElement.classList.add(type);
+        }
+
+        // 隱藏狀態訊息
+        function hideStatus() {
+            const statusElement = document.getElementById('statusMessage');
+            statusElement.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
