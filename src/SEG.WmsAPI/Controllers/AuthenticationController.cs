@@ -80,7 +80,7 @@ public class AuthenticationController : ControllerBase
             }
 
 
-            //if (!_authService.ValidateToken(loginRequest.Account, loginRequest.Password))
+            //if (!_authService.ValidateAccount(loginRequest.Account, loginRequest.Password))
             //{
             //    return BadRequest(ApiResponse<object>.Fail(
             //        loginRequest.requestId,

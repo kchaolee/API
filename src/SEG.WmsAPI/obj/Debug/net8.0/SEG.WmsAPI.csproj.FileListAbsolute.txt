@@ -44,5 +44,5 @@ D:\RandyData\HO\Daniel\20251210_EDI\9.SEG.AIGen\API\src\SEG.WmsAPI\bin\Debug\net
 D:\RandyData\HO\Daniel\20251210_EDI\9.SEG.AIGen\API\src\SEG.WmsAPI\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
 D:\RandyData\HO\Daniel\20251210_EDI\9.SEG.AIGen\API\src\SEG.WmsAPI\bin\Debug\net8.0\SEG.WmsAPI.staticwebassets.runtime.json
 D:\RandyData\HO\Daniel\20251210_EDI\9.SEG.AIGen\API\src\SEG.WmsAPI\bin\Debug\net8.0\wwwroot\AesTest.html
-D:\RandyData\HO\Daniel\20251210_EDI\9.SEG.AIGen\API\src\SEG.WmsAPI\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 D:\RandyData\HO\Daniel\20251210_EDI\9.SEG.AIGen\API\src\SEG.WmsAPI\bin\Debug\net8.0\dotnet-tools.json
+D:\RandyData\HO\Daniel\20251210_EDI\9.SEG.AIGen\API\src\SEG.WmsAPI\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

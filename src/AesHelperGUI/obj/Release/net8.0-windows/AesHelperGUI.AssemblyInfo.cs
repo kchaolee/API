@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AesHelperGUI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1860c976a54c4e64c48b8faacded7974d913ac67")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d7823fb719370eaf27b41208cd077aebdb84aed9")]
 [assembly: System.Reflection.AssemblyProductAttribute("AesHelperGUI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AesHelperGUI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

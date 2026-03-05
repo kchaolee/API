@@ -36,32 +36,32 @@ public class TokenValidationMiddleware
         }
 
         // 檢查 Authorization Header
-        var authHeader = context.Request.Headers.Authorization.FirstOrDefault();
-
-        if (string.IsNullOrEmpty(authHeader))
+        var token = context.Request.Headers.Authorization.FirstOrDefault();
+        var authService = context.RequestServices.GetRequiredService<IAuthService>();
+        if (authService == null)
         {
-            _logger.LogWarning("請求缺少 Authorization Header: {Path}", path);
-            await ReturnUnauthorized(context, ".Authorization Header 不存在");
-            return;
-        }
-
-        // 檢查是否有 "Bearer " 前綴
-        if (!authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
-        {
-            _logger.LogWarning("Authorization Header 格式不正確: {Path}", path);
-            await ReturnUnauthorized(context, "Authorization Header 格式應為 'Bearer {token}'");
+            _logger.LogWarning("Token authService 為空: {Path}", path);
+            await ReturnUnauthorized(context, "Token authService 為空");
             return;
         }
 
         // 檢查 Token 是否為空
-        var token = authHeader.Substring("Bearer ".Length).Trim();
         if (string.IsNullOrEmpty(token))
         {
             _logger.LogWarning("Token 為空: {Path}", path);
             await ReturnUnauthorized(context, "Token 為空");
             return;
         }
+        if(token.StartsWith("Bearer "))
+            token = token.Substring("Bearer ".Length).Trim();
 
+        var validationResult = authService.ValidateJwtToken(token);
+        if (validationResult.IsValid == false)
+        {
+            _logger.LogWarning("{Path}, Error: {ErrorMessage}", path, validationResult.ErrorMessage);
+            await ReturnUnauthorized(context, $"異常： {validationResult.ErrorMessage}");
+            return;
+        }  
         // 通過檢查，繼續處理請求
         await _next(context);
     }
