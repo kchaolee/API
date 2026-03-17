@@ -1,4 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using SEG.WmsAPI.Data;
+using SEG.WmsAPI.Data.Repositories;
+using SEG.WmsAPI.Models.Entities;
 using SEG.WmsAPI.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
@@ -21,6 +25,35 @@ builder.Services.AddControllers()
 // 註定 AES 加密服務
 builder.Services.AddScoped<IAesService, AesService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+
+// 設定資料庫
+var dbSettings = builder.Configuration.GetSection(DatabaseSettings.SectionName).Get<DatabaseSettings>()
+                  ?? throw new InvalidOperationException("Database configuration not found");
+
+builder.Services.AddDbContext<WmsDbContext>(options =>
+{
+    options.UseSqlServer(dbSettings.ConnectionString, sqlOptions =>
+    {
+        sqlOptions.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(10), errorNumbersToAdd: null);
+        sqlOptions.CommandTimeout(dbSettings.CommandTimeout);
+    });
+
+    if (dbSettings.EnableSensitiveDataLogging)
+    {
+        options.EnableSensitiveDataLogging();
+    }
+
+    if (dbSettings.EnableQueryCache)
+    {
+        options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+    }
+});
+
+// 註定 Repository 和 Unit of Work
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IPOHeaderRepository, POHeaderRepository>();
+builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // 設定 JWT 認證
 builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
