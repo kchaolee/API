@@ -147,3 +147,17 @@ src/SEG.WmsAPI/.vs/SEG.WmsAPI/FileContentIndex/49153b64-d0ec-4f66-b8b2-75f3f00dc
 src/SEG.WmsAPI/.vs/SEG.WmsAPI/FileContentIndex/a33c1949-88ab-498b-b217-c3dd6930ec21.vsidx
 src/SEG.WmsAPI/.vs/SEG.WmsAPI/FileContentIndex/49153b64-d0ec-4f66-b8b2-75f3f00dc96f.vsidx
 src/SEG.WmsAPI/.vs/SEG.WmsAPI/FileContentIndex/a33c1949-88ab-498b-b217-c3dd6930ec21.vsidx
+src/AesHelperGUI/obj/AesHelperGUI.csproj.nuget.dgspec.json
+src/AesHelperGUI/obj/AesHelperGUI.csproj.nuget.g.props
+src/AesHelperGUI/obj/project.assets.json
+src/AesHelperGUI/obj/project.nuget.cache
+src/AesHelperGUI/obj/Debug/net8.0-windows/AesHelperGUI.AssemblyInfo.cs
+src/AesHelperGUI/obj/Debug/net8.0-windows/AesHelperGUI.AssemblyInfoInputs.cache
+src/SEG.WmsAPI.Test/obj/project.assets.json
+src/SEG.WmsAPI.Test/obj/project.nuget.cache
+src/SEG.WmsAPI.Test/obj/SEG.WmsAPI.Test.csproj.nuget.dgspec.json
+src/SEG.WmsAPI.Test/obj/SEG.WmsAPI.Test.csproj.nuget.g.props
+src/SEG.WmsAPI.Test/obj/Debug/net8.0/SEG.WmsAPI.Test.AssemblyInfo.cs
+src/SEG.WmsAPI.Test/obj/Debug/net8.0/SEG.WmsAPI.Test.AssemblyInfoInputs.cache
+src/SEG.WmsAPI.Test/obj/Debug/net8.0/SEG.WmsAPI.Test.assets.cache
+src/SEG.WmsAPI.Test/obj/Debug/net8.0/SEG.WmsAPI.Test.csproj.AssemblyReference.cache
