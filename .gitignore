@@ -161,3 +161,5 @@ src/SEG.WmsAPI.Test/obj/Debug/net8.0/SEG.WmsAPI.Test.AssemblyInfo.cs
 src/SEG.WmsAPI.Test/obj/Debug/net8.0/SEG.WmsAPI.Test.AssemblyInfoInputs.cache
 src/SEG.WmsAPI.Test/obj/Debug/net8.0/SEG.WmsAPI.Test.assets.cache
 src/SEG.WmsAPI.Test/obj/Debug/net8.0/SEG.WmsAPI.Test.csproj.AssemblyReference.cache
+src/AesHelperGUI/obj/Debug/net8.0-windows/AesHelperGUI.AssemblyInfo.cs
+src/AesHelperGUI/obj/Debug/net8.0-windows/AesHelperGUI.AssemblyInfoInputs.cache

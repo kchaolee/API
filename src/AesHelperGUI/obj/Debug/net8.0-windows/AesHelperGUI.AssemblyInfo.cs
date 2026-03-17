@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AesHelperGUI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+71a570f91984e2ec502c41c989b0908baa24518c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e2b7552218e73e6c6b6c9209e8cb6c469ddfc513")]
 [assembly: System.Reflection.AssemblyProductAttribute("AesHelperGUI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AesHelperGUI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
