@@ -48,6 +48,54 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "SEG.WmsAPI.Controllers.OrderController",
+    "Method": "OrderCfmPacking",
+    "RelativePath": "wmService/v1/ORDER/OrderCfmPacking",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "jsonElement",
+        "Type": "System.Text.Json.JsonElement",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEG.WmsAPI.Controllers.OrderController",
+    "Method": "OrderHeaderData",
+    "RelativePath": "wmService/v1/ORDER/OrderHeaderData",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "jsonElement",
+        "Type": "System.Text.Json.JsonElement",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SEG.WmsAPI.Controllers.OrderController",
+    "Method": "OrderPickingData",
+    "RelativePath": "wmService/v1/ORDER/OrderPickingData",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "jsonElement",
+        "Type": "System.Text.Json.JsonElement",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "SEG.WmsAPI.Controllers.POController",
     "Method": "PoCfmReceipt",
     "RelativePath": "wmService/v1/PO/PoCfmReceipt",
