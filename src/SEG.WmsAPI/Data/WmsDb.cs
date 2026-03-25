@@ -560,4 +560,122 @@ public class WmsDb
         return responseData;
     }
 
+
+
+    /// <summary>
+    /// P1 - 取得出貨訂單清單的資料庫存取
+    /// </summary>
+    public async Task<P1ResponseData> GetP1ResponseData(string strStorerCode)
+    {
+        // 是否使用測試資料回傳
+        bool blnUseFakeData = true;
+        if (blnUseFakeData)
+        {
+            var returnFakeData = new P1ResponseData
+            {
+                headerList = new List<P1Header>
+                {
+                    new P1Header
+                    {
+                        assignExternReceiptNumber = "API21052600601",
+                        warehouseCode = "1020",
+                        wmsOrderNumber = "0000000001",
+                        storerCode = "97286918 ",
+                        externOrderNumber = "1600567956",
+                        customerName = "啟善商行"
+                    },
+                    new P1Header
+                    {
+                        assignExternReceiptNumber = "API21052600601",
+                        warehouseCode = "1020",
+                        wmsOrderNumber = "0000000002",
+                        storerCode = "97286918 ",
+                        externOrderNumber = "1600567957",
+                        customerName = "鮭魚寶寶"
+                    },
+                    new P1Header
+                    {
+                        assignExternReceiptNumber = "API21052600601",
+                        warehouseCode = "1020",
+                        wmsOrderNumber = "0000000003",
+                        storerCode = "97286918 ",
+                        externOrderNumber = "1600567958",
+                        customerName = "客戶名稱3"
+                    }
+                }
+            };
+
+            return returnFakeData;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// P2 - 取得揀貨處理資料的資料庫存取
+    /// </summary>
+    public async Task<P2ResponseData> GetP2ResponseData(string strStorerCode)
+    {
+        // 是否使用測試資料回傳
+        bool blnUseFakeData = true;
+        if (blnUseFakeData)
+        {
+            var returnFakeData = new P2ResponseData
+            {
+                warehouseCode = "1020",
+                wmsOrderNumber = "0000000002",
+                storerCode = "97286918",
+                externOrderNumber = "1600567957",
+                customerName = "鮭魚寶寶",
+                assignExternReceiptNumber = "API21052600601",
+                pickingData = new P2PickingData
+                {
+                    lineNo = "00001",
+                    externLineNo = "000010",
+                    sku = "100048",
+                    descr = "挪威鮭6-7kg",
+                    packQtyRequired = "10",
+                    packQtyPicked = "1",
+                    pickingUom = "件",
+                    lineRemark = "(M394)機場現發22KG↑",
+                    totalKG = "20.123"
+                }
+            };
+
+            return returnFakeData;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// P3 - 回傳揀貨確認資料的資料庫存取
+    /// </summary>
+    public async Task<P3ResponseData> GetP3ResponseData(string strStorerCode)
+    {
+        // 是否使用測試資料回傳
+        bool blnUseFakeData = true;
+        if (blnUseFakeData)
+        {
+            var returnFakeData = new P3ResponseData
+            {
+                warehouseCode = "1020",
+                wmsOrderNumber = "0000000002",
+                storerCode = "97286918",
+                externOrderNumber = "1600567957",
+                customerName = "鮭魚寶寶",
+                assignExternReceiptNumber = "API21052600601",
+                shippingLabel = new P3ShippingLabel
+                {
+                    lblExternOrderNumber = "出貨單號：1600567957",
+                    lblCustomerName = "客戶名稱：鮭魚寶寶",
+                    lblCaseID = "第 2 件"
+                }
+            };
+
+            return returnFakeData;
+        }
+
+        return null;
+    }
 }

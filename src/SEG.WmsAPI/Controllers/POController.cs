@@ -64,7 +64,7 @@ public class POController : ControllerBase
             {
                 request = _aesService.DecryptRequest<R1Request>(jsonElement, ref strDecryptedRequest); 
                 requestId = request.requestId;
-                Services.LogHelper.CreateLog<R1ResponseData>(NLog.LogLevel.Trace, _logger, requestId, JsonSerializer.Serialize(request), userAccount, "R1", "PoHeaderData", "", "", null, "", "", "", "", "", "請求解密後資料");
+                Services.LogHelper.CreateLog<R1ResponseData>(NLog.LogLevel.Trace, _logger, requestId, strDecryptedRequest, userAccount, "R1", "PoHeaderData", "", "", null, "", "", "", "", "", "請求解密後資料");
 
             }
             catch (Exception ex) 
@@ -116,8 +116,14 @@ public class POController : ControllerBase
 
             if (errors.Count > 0)
             {
-                strErrMsg = "失敗-檢查的資料不正確:" + JsonSerializer.Serialize(errors);
-                Services.LogHelper.CreateLog<R1ResponseData>(NLog.LogLevel.Error, _logger, "", JsonSerializer.Serialize(request), userAccount, "R1", "PoHeaderData", "", "", null, "", "", "", "", "", strErrMsg);
+                var strErrs = JsonSerializer.Serialize(errors, new JsonSerializerOptions
+                {
+                    Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
+                    WriteIndented = false
+                });
+
+                strErrMsg = "失敗-檢查的資料不正確";
+                Services.LogHelper.CreateLog<R1ResponseData>(NLog.LogLevel.Error, _logger, requestId, strDecryptedRequest, userAccount, "R1", "PoHeaderData", "", "", null, "", "", "", "", "", strErrs);
                 return BadRequest(ApiResponse<object>.Fail(requestId, strErrMsg, errors));
             }
             #endregion
@@ -220,8 +226,14 @@ public class POController : ControllerBase
 
             if (errors.Count > 0)
             {
-                strErrMsg = "失敗-檢查的資料不正確:" + JsonSerializer.Serialize(errors);
-                Services.LogHelper.CreateLog<R2ResponseData>(NLog.LogLevel.Error, _logger, "", JsonSerializer.Serialize(request), userAccount, "R2", "PoDetailData", "", "", null, "", "", "", "", "", strErrMsg);
+                var strErrs = JsonSerializer.Serialize(errors, new JsonSerializerOptions
+                {
+                    Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
+                    WriteIndented = false
+                });
+
+                strErrMsg = "失敗-檢查的資料不正確";
+                Services.LogHelper.CreateLog<R2ResponseData>(NLog.LogLevel.Error, _logger, requestId, strDecryptedRequest, userAccount, "R2", "PoDetailData", "", "", null, "", "", "", "", "", strErrs);
                 return BadRequest(ApiResponse<object>.Fail(requestId, strErrMsg, errors));
             }
             #endregion
@@ -234,14 +246,14 @@ public class POController : ControllerBase
             }
             catch (Exception ex)
             {
-                Services.LogHelper.CreateLog<R2ResponseData>(NLog.LogLevel.Error, _logger, "", strDecryptedRequest, userAccount, "R2", "PoDetailData", "", "", null, "", "", "", "", "", ex.Message);
+                Services.LogHelper.CreateLog<R2ResponseData>(NLog.LogLevel.Error, _logger, requestId, strDecryptedRequest, userAccount, "R2", "PoDetailData", "", "", null, "", "", "", "", "", ex.Message);
                 return BadRequest(ApiResponse<object>.Fail(request.requestId, "失敗-取得收貨明細資料異常", "F983", ex.Message));
             }
            
         }
         catch (Exception ex)
         {
-            Services.LogHelper.CreateLog<R2ResponseData>(NLog.LogLevel.Error, _logger, "", jsonElement, userAccount, "R2", "PoDetailData", "", "", null, "", "", "", "", "", ex.Message);
+            Services.LogHelper.CreateLog<R2ResponseData>(NLog.LogLevel.Error, _logger, requestId, jsonElement, userAccount, "R2", "PoDetailData", "", "", null, "", "", "", "", "", ex.Message);
             return StatusCode(500, ApiResponse<object>.Fail(requestId, "伺服器處理異常", "F999", ex.Message));
         }
     }
@@ -389,8 +401,14 @@ public class POController : ControllerBase
 
             if (errors.Count > 0)
             {
-                strErrMsg = "失敗-檢查的資料不正確:" + JsonSerializer.Serialize(errors);
-                Services.LogHelper.CreateLog<R2ResponseData>(NLog.LogLevel.Error, _logger, "", JsonSerializer.Serialize(request), userAccount, "R3", "PoReceivingItem", "", "", null, "", "", "", "", "", strErrMsg);
+                var strErrs = JsonSerializer.Serialize(errors, new JsonSerializerOptions
+                {
+                    Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
+                    WriteIndented = false
+                });
+
+                strErrMsg = "失敗-檢查的資料不正確";
+                Services.LogHelper.CreateLog<R2ResponseData>(NLog.LogLevel.Error, _logger, requestId, strDecryptedRequest, userAccount, "R3", "PoReceivingItem", "", "", null, "", "", "", "", "", strErrs);
                 return BadRequest(ApiResponse<object>.Fail(requestId, strErrMsg, errors));
             }
             #endregion
@@ -403,13 +421,13 @@ public class POController : ControllerBase
             }
             catch (Exception ex) 
             {
-                Services.LogHelper.CreateLog<R3ResponseData>(NLog.LogLevel.Error, _logger, "", strDecryptedRequest, userAccount, "R3", "PoReceivingItem", "", "", null, "", "", "", "", "", ex.Message);
+                Services.LogHelper.CreateLog<R3ResponseData>(NLog.LogLevel.Error, _logger, requestId, strDecryptedRequest, userAccount, "R3", "PoReceivingItem", "", "", null, "", "", "", "", "", ex.Message);
                 return BadRequest(ApiResponse<object>.Fail(request.requestId, "失敗-PoReceivingItem確認異常", "F983", ex.Message));
             } 
         }
         catch (Exception ex)
         {
-            Services.LogHelper.CreateLog<R3ResponseData>(NLog.LogLevel.Error, _logger, "", strDecryptedRequest, userAccount, "R3", "PoReceivingItem", "", "", null, "", "", "", "", "", ex.Message);
+            Services.LogHelper.CreateLog<R3ResponseData>(NLog.LogLevel.Error, _logger, requestId, strDecryptedRequest, userAccount, "R3", "PoReceivingItem", "", "", null, "", "", "", "", "", ex.Message);
             return StatusCode(500, ApiResponse<object>.Fail(requestId, "伺服器處理異常", "F999", ex.Message));
         }
     }
@@ -500,8 +518,14 @@ public class POController : ControllerBase
 
             if (errors.Count > 0)
             {
-                strErrMsg = "失敗-檢查的資料不正確:" + JsonSerializer.Serialize(errors);
-                Services.LogHelper.CreateLog<R2ResponseData>(NLog.LogLevel.Error, _logger, "", JsonSerializer.Serialize(request), userAccount, "R4", "PoVerifying", "", "", null, "", "", "", "", "", strErrMsg);
+                var strErrs = JsonSerializer.Serialize(errors, new JsonSerializerOptions
+                {
+                    Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
+                    WriteIndented = false
+                });
+
+                strErrMsg = "失敗-檢查的資料不正確";
+                Services.LogHelper.CreateLog<R4ResponseData>(NLog.LogLevel.Error, _logger, requestId, strDecryptedRequest, userAccount, "R4", "PoVerifying", "", "", null, "", "", "", "", "", strErrs);
                 return BadRequest(ApiResponse<object>.Fail(requestId, strErrMsg, errors));
             }
             #endregion
@@ -514,7 +538,7 @@ public class POController : ControllerBase
             }
             catch (Exception ex)
             {
-                Services.LogHelper.CreateLog<R4ResponseData>(NLog.LogLevel.Error, _logger, "", strDecryptedRequest, userAccount, "R4", "PoVerifying", "", "", null, "", "", "", "", "", ex.Message);
+                Services.LogHelper.CreateLog<R4ResponseData>(NLog.LogLevel.Error, _logger, requestId, strDecryptedRequest, userAccount, "R4", "PoVerifying", "", "", null, "", "", "", "", "", ex.Message);
                 return BadRequest(ApiResponse<object>.Fail(request.requestId, "失敗-取得收貨核對明細異常", "F983", ex.Message));
             }
               
@@ -630,7 +654,7 @@ public class POController : ControllerBase
             if (errors.Count > 0)
             {
                 strErrMsg = "失敗-檢查的資料不正確:" + JsonSerializer.Serialize(errors);
-                Services.LogHelper.CreateLog<R2ResponseData>(NLog.LogLevel.Error, _logger, "", JsonSerializer.Serialize(request), userAccount, "R4", "PoVerifying", "", "", null, "", "", "", "", "", strErrMsg);
+                Services.LogHelper.CreateLog<R5ResponseData>(NLog.LogLevel.Error, _logger, requestId, strDecryptedRequest, userAccount, "R4", "PoVerifying", "", "", null, "", "", "", "", "", strErrMsg);
                 return BadRequest(ApiResponse<object>.Fail(requestId, strErrMsg, errors));
             }
             #endregion
@@ -643,13 +667,13 @@ public class POController : ControllerBase
             }
             catch (Exception ex)
             {
-                Services.LogHelper.CreateLog<R5ResponseData>(NLog.LogLevel.Error, _logger, "", strDecryptedRequest, userAccount, "R5", "PoCfmReceipt", "", "", null, "", "", "", "", "", ex.Message);
+                Services.LogHelper.CreateLog<R5ResponseData>(NLog.LogLevel.Error, _logger, requestId, strDecryptedRequest, userAccount, "R5", "PoCfmReceipt", "", "", null, "", "", "", "", "", ex.Message);
                 return BadRequest(ApiResponse<object>.Fail(request.requestId, "失敗-全收確認異常", "F983", ex.Message));
             }
         }
         catch (Exception ex)
         {
-            Services.LogHelper.CreateLog<R5ResponseData>(NLog.LogLevel.Error, _logger, "", strDecryptedRequest, userAccount, "R5", "PoCfmReceipt", "", "", null, "", "", "", "", "", ex.Message);
+            Services.LogHelper.CreateLog<R5ResponseData>(NLog.LogLevel.Error, _logger, requestId, strDecryptedRequest, userAccount, "R5", "PoCfmReceipt", "", "", null, "", "", "", "", "", ex.Message);
             return StatusCode(500, ApiResponse<object>.Fail("", "伺服器處理異常", "F999", ex.Message));
         }
     }
