@@ -9033,13 +9033,5 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.104/PortableRuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "NU1900",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "取得套件弱點資料時發生錯誤: 無法載入來源 https://nuget.telerik.com/v3/index.json 的服務索引。"
-    }
-  ]
+  }
 }

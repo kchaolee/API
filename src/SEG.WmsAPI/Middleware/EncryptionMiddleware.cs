@@ -1,4 +1,10 @@
+using Azure.Core;
+using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.IdentityModel.Tokens;
+using NLog;
 using SEG.WmsAPI.Models.Requests;
+using SEG.WmsAPI.Models.Responses;
+using SEG.WmsAPI.Services;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -13,22 +19,18 @@ namespace SEG.WmsAPI.Middleware;
 public class EncryptionMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly ILogger<EncryptionMiddleware> _logger;
+    private readonly NLog.ILogger _logger;
 
     public EncryptionMiddleware(RequestDelegate next, ILogger<EncryptionMiddleware> logger)
     {
         _next = next;
-        _logger = logger;
+        _logger = LogManager.GetLogger("EncryptionMiddleware");
     }
 
     public async Task InvokeAsync(HttpContext context)
     {
-        // 登入接口由控制器自行處理完整流程
-        //if (context.Request.Path.Value?.Contains("/Auth/SignInVerification") == true)
-        //{
-        //    await _next(context);
-        //    return;
-        //}
+        var userAccount = "";
+        var requestId = "";
 
         // AesTest.Html
         if (context.Request.Path.Value?.Contains("/api/Encryption/encrypt") == true ||
@@ -53,11 +55,17 @@ public class EncryptionMiddleware
             memoryStream.Seek(0, SeekOrigin.Begin);
             var originalResponse = await new StreamReader(memoryStream).ReadToEndAsync();
 
-            // 只有成功的回應（狀態碼 2xx）才需要加密
+            // 回應加密
             if (context.Response.StatusCode >= 200 && context.Response.StatusCode <= 500)
             {
                 try
                 {
+                    // 獲取 requestId
+                    requestId = context.Items["requestId"]?.ToString() ?? "";
+                    var tokenValidationResult = context.Items["TokenValidationResult"] as SEG.WmsAPI.Services.TokenValidationResult;
+                    userAccount = tokenValidationResult?.Account ?? "";
+                    Services.LogHelper.CreateLog<LoginResponseData>(NLog.LogLevel.Trace, _logger, requestId, originalResponse, userAccount, "", "加解密中間件 EncryptionMiddleware", "", "", null, "", "", "", "", "", "加密前的回應內容");
+
                     // 加密原始回應
                     var encryptedData = aesService.Encrypt(originalResponse);
 
@@ -73,16 +81,19 @@ public class EncryptionMiddleware
                         WriteIndented = false
                     });
 
+                    Services.LogHelper.CreateLog<LoginResponseData>(NLog.LogLevel.Trace, _logger, requestId, encryptedData, userAccount, "", "加解密中間件 EncryptionMiddleware", "", "", null, "", "", "", "", "", "加密後的回應內容");
+
                     context.Response.ContentLength = Encoding.UTF8.GetByteCount(responseJson);
                     context.Response.Body = originalBodyStream;
                     context.Response.ContentType = "application/json";
                     await context.Response.WriteAsync(responseJson);
-
-                    _logger.LogInformation("Response encrypted and wrapped in ReturnData");
+                     
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Failed to encrypt or wrap response");
+                    var strErrMsg = $"回應資料加密失敗: {ex.Message}";
+                    Services.LogHelper.CreateLog<LoginResponseData>(NLog.LogLevel.Error, _logger, requestId, originalResponse, userAccount, "A1", "SignInVerification", "", "", null, "", "", "", "", "", strErrMsg);
+
                     // 加密失敗時，返回原始回應
                     context.Response.Body = originalBodyStream;
                     context.Response.ContentType = "application/json";

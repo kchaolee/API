@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SEG.WmsAPI.Data;
-using SEG.WmsAPI.Data.Repositories;
 using SEG.WmsAPI.Models.Entities;
 using SEG.WmsAPI.Services;
 using System.IdentityModel.Tokens.Jwt;
@@ -30,30 +29,35 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 var dbSettings = builder.Configuration.GetSection(DatabaseSettings.SectionName).Get<DatabaseSettings>()
                   ?? throw new InvalidOperationException("Database configuration not found");
 
-builder.Services.AddDbContext<WmsDbContext>(options =>
+builder.Services.AddScoped<WmsDbContext>(provider =>
 {
-    options.UseSqlServer(dbSettings.ConnectionString, sqlOptions =>
-    {
-        sqlOptions.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(10), errorNumbersToAdd: null);
-        sqlOptions.CommandTimeout(dbSettings.CommandTimeout);
-    });
-
-    if (dbSettings.EnableSensitiveDataLogging)
-    {
-        options.EnableSensitiveDataLogging();
-    }
-
-    if (dbSettings.EnableQueryCache)
-    {
-        options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-    }
+    var connectionString = dbSettings.ConnectionString; // Replace with actual connection string
+    var enableSensitiveDataLogging = true; // Adjust as needed
+    var commandTimeout = 60; // Adjust as needed
+    return new WmsDbContext(connectionString, enableSensitiveDataLogging, commandTimeout);
 });
 
-// 註定 Repository 和 Unit of Work
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-builder.Services.AddScoped<IPOHeaderRepository, POHeaderRepository>();
-builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+//builder.Services.AddScoped<WmsDbContext>(options =>
+//{
+//    options.UseSqlServer(dbSettings.ConnectionString, sqlOptions =>
+//    {
+//        sqlOptions.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(10), errorNumbersToAdd: null);
+//        sqlOptions.CommandTimeout(dbSettings.CommandTimeout);
+//    });
+
+//    if (dbSettings.EnableSensitiveDataLogging)
+//    {
+//        options.EnableSensitiveDataLogging();
+//    }
+
+//    if (dbSettings.EnableQueryCache)
+//    {
+//        options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+//    }
+//});
+
+builder.Services.AddScoped<WmsDb>();
 
 // 設定 JWT 認證
 builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);

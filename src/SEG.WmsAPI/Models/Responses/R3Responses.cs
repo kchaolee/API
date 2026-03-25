@@ -2,40 +2,25 @@ namespace SEG.WmsAPI.Models.Responses;
 
 public class R3ResponseData
 {
-    public string WarehouseCode { get; set; } = string.Empty;
-    public string WmsAsnNumber { get; set; } = string.Empty;
-    public string StorerCode { get; set; } = string.Empty;
-    public string ExternReceiptNumber { get; set; } = string.Empty;
-    public string VendorName { get; set; } = string.Empty;
-    public string AsnTotalQty { get; set; } = string.Empty;
-    public string AsnTotalUom { get; set; } = string.Empty;
-    public string RecTotalPackQty { get; set; } = string.Empty;
-    public string RecPalletQty { get; set; } = string.Empty;
-    public List<RecLoc> RecLocList { get; set; } = new();
-    public List<R3Item> ItemList { get; set; } = new();
+    public string warehouseCode { get; set; } = string.Empty;
+    public string wmsAsnNumber { get; set; } = string.Empty;
+    public string storerCode { get; set; } = string.Empty;
+    public string externReceiptNumber { get; set; } = string.Empty;
+    public string vendorName { get; set; } = string.Empty;
+    public string lineNo { get; set; } = string.Empty;
+    public string externLineNo { get; set; } = string.Empty;
+    public string sku { get; set; } = string.Empty;
+    public string descr { get; set; } = string.Empty;
+    public string expiryDate { get; set; } = string.Empty;
+    public string packQty { get; set; } = string.Empty;
+    public string fishingGroundName { get; set; } = string.Empty;
+    public string qty { get; set; } = string.Empty;
+    public string stockUom { get; set; } = string.Empty;
+    public string? batchNumber { get; set; } = string.Empty;
+    public string? mfgDate { get; set; } = string.Empty;
+    public string? storageStatus { get; set; } = string.Empty;
+    public string? stockType { get; set; } = string.Empty;
+    public string? other { get; set; } = string.Empty;
+    public string? other1 { get; set; } = string.Empty;
 }
 
-public class RecLoc
-{
-    public string RecLocCode { get; set; } = string.Empty;
-    public string RecLocName { get; set; } = string.Empty;
-}
-
-public class R3Item
-{
-    public string LineNo { get; set; } = string.Empty;
-    public string ExternLineNo { get; set; } = string.Empty;
-    public string Sku { get; set; } = string.Empty;
-    public string Descr { get; set; } = string.Empty;
-    public string ExpiryDate { get; set; } = string.Empty;
-    public string PackQty { get; set; } = string.Empty;
-    public string Qty { get; set; } = string.Empty;
-    public string StockUom { get; set; } = string.Empty;
-    public string FishingGroundName { get; set; } = string.Empty;
-    public string? BatchNumber { get; set; }
-    public string? MfgDate { get; set; }
-    public string? StorageStatus { get; set; }
-    public string? StockType { get; set; }
-    public string? Other { get; set; }
-    public string? Other1 { get; set; }
-}

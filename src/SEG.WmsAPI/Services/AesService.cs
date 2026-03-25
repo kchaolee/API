@@ -1,6 +1,12 @@
+using Azure.Core;
+using SEG.WmsAPI.Models.Common;
+using SEG.WmsAPI.Models.Requests;
+using SEG.WmsAPI.Models.Responses;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Unicode;
 
 namespace SEG.WmsAPI.Services;
 
@@ -11,6 +17,7 @@ public interface IAesService
 {
     string Encrypt(string plainText);
     string Decrypt(string cipherText);
+    T DecryptRequest<T>(JsonElement jsonElement, ref string strDecryptedRequest) where T : class;
 }
 
 /// <summary>
@@ -172,6 +179,41 @@ public class AesService : IAesService
             WriteIndented = false
         });
     }
+
+    /// <summary>
+    /// 從 RequestData 結構中解密回應
+    /// </summary>
+    public T DecryptRequest<T>(JsonElement jsonElement, ref string strDecryptedRequest) where T : class
+    {
+         
+        var encryptedRequest = JsonSerializer.Deserialize<EncryptedRequest>(jsonElement.ToString(), new JsonSerializerOptions
+        {
+            Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
+            PropertyNameCaseInsensitive = true
+        });
+
+        strDecryptedRequest = Decrypt(encryptedRequest.RequestData);
+        T request = JsonSerializer.Deserialize<T>(strDecryptedRequest, new JsonSerializerOptions
+        {
+            Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
+            PropertyNameCaseInsensitive = true
+        });
+
+        // 將 Unicode 轉 中文
+        strDecryptedRequest = JsonSerializer.Serialize(request, new JsonSerializerOptions
+        {
+            Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
+            PropertyNameCaseInsensitive = true
+        });
+
+        if (request == null)
+        {
+            throw new Exception("AES 加密資料解密異常");
+        } 
+
+        return request;
+    }
+
 
     /// <summary>
     /// 從 ReturnData 結構中解密回應

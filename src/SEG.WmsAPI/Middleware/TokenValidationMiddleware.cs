@@ -1,7 +1,10 @@
+using Azure.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NLog;
 using SEG.WmsAPI.Models.Common;
 using SEG.WmsAPI.Models.Requests;
+using SEG.WmsAPI.Models.Responses;
 using SEG.WmsAPI.Services;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -16,16 +19,17 @@ namespace SEG.WmsAPI.Middleware;
 public class TokenValidationMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly ILogger<TokenValidationMiddleware> _logger;
-
-    public TokenValidationMiddleware(RequestDelegate next, ILogger<TokenValidationMiddleware> logger)
+    private readonly NLog.ILogger _logger;
+   
+    public TokenValidationMiddleware(RequestDelegate next)
     {
         _next = next;
-        _logger = logger;
+        _logger = LogManager.GetLogger("TokenValidationMiddleware");
     }
 
     public async Task InvokeAsync(HttpContext context)
     {
+        var strErrMsg = "";
         var path = context.Request.Path.Value ?? "";
 
         // 登入接口和加密工具接口不需要 Token 驗證
@@ -40,29 +44,36 @@ public class TokenValidationMiddleware
         var authService = context.RequestServices.GetRequiredService<IAuthService>();
         if (authService == null)
         {
-            _logger.LogWarning("Token authService 為空: {Path}", path);
-            await ReturnUnauthorized(context, "Token authService 為空");
+            strErrMsg = $"Token authService 為空";
+            Services.LogHelper.CreateLog<LoginResponseData>(NLog.LogLevel.Error, _logger, "", token, "", "", "Token驗證中間件 TokenValidationMiddleware", "", "", null, "", "", "", "", "", strErrMsg);
+            await ReturnUnauthorized(context, strErrMsg);
             return;
         }
 
         // 檢查 Token 是否為空
         if (string.IsNullOrEmpty(token))
         {
-            _logger.LogWarning("Token 為空: {Path}", path);
-            await ReturnUnauthorized(context, "Token 為空");
+            strErrMsg = $"Token 為空";
+            Services.LogHelper.CreateLog<LoginResponseData>(NLog.LogLevel.Error, _logger, "", token, "", "", "Token驗證中間件 TokenValidationMiddleware", "", "", null, "", "", "", "", "", strErrMsg);
+            await ReturnUnauthorized(context, strErrMsg);
             return;
         }
         if(token.StartsWith("Bearer "))
             token = token.Substring("Bearer ".Length).Trim();
 
-        var validationResult = authService.ValidateJwtToken(token);
-        if (validationResult.IsValid == false)
+ 
+        var tokenValidationResult = authService.ValidateJwtToken(token);
+        if (tokenValidationResult.IsValid == false)
         {
-            _logger.LogWarning("{Path}, Error: {ErrorMessage}", path, validationResult.ErrorMessage);
-            await ReturnUnauthorized(context, $"異常： {validationResult.ErrorMessage}");
+            strErrMsg = $"token 驗證失敗: {tokenValidationResult.ErrorMessage}";
+            Services.LogHelper.CreateLog<LoginResponseData>(NLog.LogLevel.Error, _logger, "", token, "", "", "Token驗證中間件 TokenValidationMiddleware", "", "", null, "", "", "", "", "", strErrMsg);
+            await ReturnUnauthorized(context, strErrMsg);
             return;
-        }  
-        // 通過檢查，繼續處理請求
+        }
+
+        context.Items["TokenValidationResult"] = tokenValidationResult;
+
+        // 通過通過檢查，繼續處理請求
         await _next(context);
     }
 

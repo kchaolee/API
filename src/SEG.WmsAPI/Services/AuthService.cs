@@ -1,12 +1,13 @@
+using Microsoft.IdentityModel.Tokens;
+using SEG.WmsAPI.Models.Common;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 namespace SEG.WmsAPI.Services;
 
 /// <summary>
-/// Token 驗證結果
+/// Token 解析結果
 /// </summary>
 public class TokenValidationResult
 {
@@ -44,7 +45,7 @@ public class EncryptionSettings
 public interface IAuthService
 {
     string GenerateToken(string account);
-    bool ValidateToken(string account, string password);
+    bool ValidateUserAccount(string account, string password);
     TokenValidationResult ValidateJwtToken(string token);
 }
 
@@ -68,11 +69,16 @@ public class AuthService : IAuthService
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+        // 取得台灣時區
+        TimeZoneInfo tst = TimeZoneInfo.FindSystemTimeZoneById("Taipei Standard Time");
+        // 將 UTC 轉為台灣時間
+        DateTime taiwanTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, tst);
+
         var token = new JwtSecurityToken(
             issuer: _jwtSettings.Issuer,
             audience: _jwtSettings.Audience,
-            claims: new[] { new Claim(ClaimTypes.Name, account) },
-            expires: DateTime.UtcNow.AddHours(_jwtSettings.ExpiryHours),
+            claims: new[] { new Claim("UserAccount", account) },
+            expires: taiwanTime.AddHours(_jwtSettings.ExpiryHours),
             signingCredentials: credentials
         );
 
@@ -82,9 +88,9 @@ public class AuthService : IAuthService
     /// <summary>
     /// 驗證帳號密碼
     /// </summary>
-    public bool ValidateToken(string account, string password)
+    public bool ValidateUserAccount(string account, string password)
     {
-        return !string.IsNullOrEmpty(account) && !string.IsNullOrEmpty(password);
+        return (account == "user001" && password == "password123");
     }
 
     /// <summary>
@@ -121,14 +127,20 @@ public class AuthService : IAuthService
             ClaimsPrincipal principal = tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
 
             var jwtToken = validatedToken as JwtSecurityToken;
-            var accountClaim = principal.FindFirst(ClaimTypes.Name);
+            var accountClaim = principal.Claims.Where(c => c.Type == "UserAccount").FirstOrDefault();
+
+            // 取得台灣時區
+            TimeZoneInfo tst = TimeZoneInfo.FindSystemTimeZoneById("Taipei Standard Time");
+            // 將 UTC 轉為台灣時間
+            DateTime validToTaiwanTime = TimeZoneInfo.ConvertTimeFromUtc(jwtToken.ValidTo, tst);
+            DateTime validFromTaiwanTime = TimeZoneInfo.ConvertTimeFromUtc(jwtToken.ValidFrom, tst);
 
             return new TokenValidationResult
             {
                 IsValid = true,
                 Account = accountClaim?.Value,
-                Expiration = jwtToken?.ValidTo,
-                IssuedAt = jwtToken?.ValidFrom,
+                Expiration = validToTaiwanTime,
+                IssuedAt = validFromTaiwanTime,
                 Issuer = jwtToken?.Issuer,
                 Claims = principal.Claims.ToDictionary(c => c.Type, c => c.Value)
             };

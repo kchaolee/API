@@ -7,6 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="dll\**" />
+    <Compile Remove="docs\**" />
+    <Content Remove="dll\**" />
+    <Content Remove="docs\**" />
+    <EmbeddedResource Remove="dll\**" />
+    <EmbeddedResource Remove="docs\**" />
+    <None Remove="dll\**" />
+    <None Remove="docs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.0" />
@@ -20,7 +31,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="NLog">
+      <HintPath>dll\NLog.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="wwwroot\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

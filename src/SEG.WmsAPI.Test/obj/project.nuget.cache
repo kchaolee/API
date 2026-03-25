@@ -161,15 +161,5 @@
     "C:\\Users\\kchao\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512",
     "C:\\Users\\kchao\\.nuget\\packages\\yamldotnet\\16.3.0\\yamldotnet.16.3.0.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1900",
-      "level": "Warning",
-      "message": "取得套件弱點資料時發生錯誤: 無法載入來源 https://nuget.telerik.com/v3/index.json 的服務索引。",
-      "projectPath": "D:\\RandyData\\HO\\Daniel\\20251210_EDI\\9.SEG.AIGen\\API\\src\\SEG.WmsAPI.Test\\SEG.WmsAPI.Test.csproj",
-      "warningLevel": 1,
-      "filePath": "D:\\RandyData\\HO\\Daniel\\20251210_EDI\\9.SEG.AIGen\\API\\src\\SEG.WmsAPI.Test\\SEG.WmsAPI.Test.csproj",
-      "targetGraphs": []
-    }
-  ]
+  "logs": []
 }

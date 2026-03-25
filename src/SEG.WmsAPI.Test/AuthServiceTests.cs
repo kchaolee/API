@@ -176,7 +176,7 @@ namespace SEG.WmsAPI.Test
             string password = "validpassword";
 
             // Act
-            bool result = _authService!.ValidateToken(account, password);
+            bool result = _authService!.ValidateUserAccount(account, password);
 
             // Assert
             Assert.IsTrue(result);
@@ -192,7 +192,7 @@ namespace SEG.WmsAPI.Test
             string password = "password";
 
             // Act
-            bool result = _authService!.ValidateToken(account, password);
+            bool result = _authService!.ValidateUserAccount(account, password);
 
             // Assert
             Assert.IsFalse(result);
@@ -208,7 +208,7 @@ namespace SEG.WmsAPI.Test
             string password = "";
 
             // Act
-            bool result = _authService!.ValidateToken(account, password);
+            bool result = _authService!.ValidateUserAccount(account, password);
 
             // Assert
             Assert.IsFalse(result);
@@ -224,7 +224,7 @@ namespace SEG.WmsAPI.Test
             string password = "password";
 
             // Act
-            bool result = _authService!.ValidateToken(account!, password);
+            bool result = _authService!.ValidateUserAccount(account!, password);
 
             // Assert
             Assert.IsFalse(result);
@@ -240,7 +240,7 @@ namespace SEG.WmsAPI.Test
             string? password = null;
 
             // Act
-            bool result = _authService!.ValidateToken(account, password!);
+            bool result = _authService!.ValidateUserAccount(account, password!);
 
             // Assert
             Assert.IsFalse(result);

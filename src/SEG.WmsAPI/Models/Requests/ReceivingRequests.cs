@@ -1,15 +1,32 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace SEG.WmsAPI.Models.Requests;
 
 public class R1Request : Models.Common.RequestBase
 {
+
+    [MaxLength(15)]
+    [Required]
     public string StorerCode { get; set; } = string.Empty;
+
+    [MaxLength(10)]
+    [Required]
     public string DocStatus { get; set; } = string.Empty;
 }
 
 public class R2Request : Models.Common.RequestBase
 {
+
+    [MaxLength(30)]
+    [Required]
     public string WmsAsnNumber { get; set; } = string.Empty;
+
+    [MaxLength(15)]
+    [Required]
     public string StorerCode { get; set; } = string.Empty;
+    
+    [MaxLength(30)]
+    [Required]
     public string ExternReceiptNumber { get; set; } = string.Empty;
 }
 
